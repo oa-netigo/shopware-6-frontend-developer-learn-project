@@ -406,7 +406,6 @@ code:not([class]) {
   .main-nav.open { display: flex; }
   .main-nav a { padding: 10px 16px; width: 100%; }
   .nav-toggle { display: flex; }
-  .app-header { position: relative; }
   .container { padding: 0 16px; }
 }
 

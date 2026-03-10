@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = document.getElementById('mainNav');
   if (toggle && nav) toggle.addEventListener('click', () => nav.classList.toggle('open'));
 
+  // Mobile sidebar toggle
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+  if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
   // Parse URL params
   const params = new URLSearchParams(window.location.search);
   const moduleId = params.get('module') || 'module-1';
@@ -21,6 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.title = `${module.title} — SW Learn`;
+
+  // Populate mobile TOC bar title
+  const mobileTocTitle = document.getElementById('mobileTocTitle');
+  if (mobileTocTitle) mobileTocTitle.textContent = module.icon + ' ' + module.title;
 
   renderSidebar(module);
   renderContent(module);
@@ -97,6 +107,9 @@ function scrollToSection(sectionId, e) {
   const card = document.getElementById('section-card-' + sectionId);
   if (!card) return;
 
+  // Close sidebar on mobile before scrolling
+  closeSidebar();
+
   // Open the section if not open
   if (!card.classList.contains('open')) {
     toggleSection(sectionId);
@@ -104,7 +117,25 @@ function scrollToSection(sectionId, e) {
 
   setTimeout(() => {
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
+  }, 150);
+}
+
+/* ----------------------------------------------------------
+   Mobile Sidebar Drawer
+   ---------------------------------------------------------- */
+function toggleSidebar() {
+  const sidebar = document.getElementById('readerSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!sidebar) return;
+  const isOpen = sidebar.classList.toggle('sidebar-open');
+  if (overlay) overlay.classList.toggle('active', isOpen);
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('readerSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar) sidebar.classList.remove('sidebar-open');
+  if (overlay) overlay.classList.remove('active');
 }
 
 /* ----------------------------------------------------------
@@ -290,3 +321,5 @@ function setupIntersectionObserver(module) {
 // Make functions available globally for inline onclick handlers
 window.toggleSection = toggleSection;
 window.scrollToSection = scrollToSection;
+window.toggleSidebar = toggleSidebar;
+window.closeSidebar = closeSidebar;
