@@ -1,0 +1,545 @@
+Shopware Theme Development
+Introduction
+Creating a custom theme is one of the most powerful ways to shape the visual identity of your Shopware Storefront. In this course, we will explore how to create, configure, and customize themes to match your brand’s design.
+
+You will learn how to build themes from scratch, manage their configuration through the theme.json, and make them adaptable with theme settings. Step by step, we will also cover how to override SCSS variables and structure your styles to ensure a consistent and maintainable design system.
+
+By the end of this course, you will have a solid understanding of how to build and manage custom themes that are flexible, configurable, and visually aligned with your brand.
+
+_____________________________
+
+Creating a Theme
+
+Learning Objectives
+Learn how to create a theme via CLI.
+Understand the difference between a theme and a plugin.
+Introduction
+Themes are an important part of Shopware. They allow you to customize the appearance of your shop and create a unique shopping experience for your customers.
+
+Themes are basically plugins or apps on steroids. They can contain templates, styles, and assets that change the look and feel of your shop. In this unit, we will create a new theme and customize it to fit our needs.
+
+Note
+Sometimes inventing the wheel is not necessary. Check out the Shopware store for existing themes that you can use as a base for your custom theme.
+
+Creating a Theme
+There are two ways to approach a new theme in Shopware: via plugin or via app.
+
+Via Plugin
+You can use the Shopware console command theme:create to generate a new theme skeleton. Run the following command in your shop’s root directory:
+
+bin/console theme:create AcademyTheme
+
+This command will create a new theme called AcademyTheme in the custom/plugins directory. The theme will contain all the necessary files and directories to get you started.
+You can also clone the AcademyTheme repository from the Shopware Academy GitHub account.
+
+The difference to a “normal” plugin is that the theme.json file is created. This file is the central part of your theme and controls how templates, style, scripts, and assets are loaded. In the next learning unit, we will learn more about the theme.json file.
+
+git clone git@github.com:ShopwareAcademy/AcademyTheme.git
+
+{
+  "name": "AcademyTheme",
+  "author": "Shopware AG",
+  "description": {
+    "en-GB": "Academy plugin theme"
+  },
+  "views": [
+     "@Storefront",
+     "@Plugins",
+     "@AcademyTheme"
+  ],
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@Storefront",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/academy-theme/academy-theme.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "app/storefront/src/assets"
+  ]
+}
+
+After creating the theme, it is not active yet. You need to install and activate it to make it available in the Storefront by the following command:
+
+bin/console plugin:install AcademyTheme --activate
+
+Only then your theme can be selected and compiled in the Storefront.
+
+Via App
+Doing the same with an app is similar but needs a manual step to create the theme.json. You can use the Shopware console command app:create to generate a new app skeleton. Run the following command in your shop’s root directory:
+
+bin/console app:create AcademyTheme
+
+All you have to do now is add your theme.json file to the src/Resources directory of your theme. This file will contain all the configurations for your theme. This is needed since there is no app:theme:create command available yet.
+
+{
+  "name": "AcademyTheme",
+  "author": "shopware AG",
+  "description": {
+    "en-GB": "Academy app theme"
+  },
+  "views": [
+    "@Storefront",
+    "@Plugins",
+    "@AcademyTheme"
+  ],
+  "previewMedia": "app/storefront/dist/assets/defaultThemePreview.jpg",
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@Storefront",
+    "@AcademyTheme"
+  ]
+}
+
+Pros and Cons: Which One Should I Use?
+Both methods have their pros and cons, so choose the one that fits your needs best.
+
+Use the app method when your theme is only for style and storefront changes, and not for backend logic.
+Use the plugin method when you want to have full flexibility, including backend logic.
+For more information, check out this article: Plugin or App.
+
+Conclusion
+No matter whether you create a theme via plugin or app, you will end up with a theme that is ready to be customized.
+
+You will find it in the administration under Extensions > My extensions > Themes (tab) or pass this path to your browser and adjust it to your shop’s domain.
+
+
+
+In the next units, we will check out how to change, compile and customize your theme.
+
+Summary
+In this learning unit, you learned how to:
+
+Create a new theme in Shopware using the CLI (bin/console theme:create) or via an App (bin/console app:create and a manually added theme.json file).
+Understand the purpose of the theme.json as a central configuration for views, styles, scripts, and assets.
+Distinguish between a plugin-based and app-based theme, including their pros and cons.
+Locate and activate your theme in the Administration under Extensions > My extensions > Themes (tab).
+With this knowledge, you can now set up and register your own theme as the foundation for further customizations.
+
+_____________________________
+
+Theme Settings
+
+Learning Objectives
+Understand the basic structure of a theme configuration.
+Know where to add theme settings.
+Introduction
+In this learning unit, you will learn how to adjust your theme using configurations, enhancing its flexibility and adaptability for various scenarios.
+
+Real-World Example
+Imagine you are developing a theme that has a thought through design. You want to allow the user to change the color of the main navigation.
+
+To achieve this, you need to add a configuration field to your theme that allows the user to select a color for the main navigation, for example.
+
+Checkout Git Tag
+To follow along with this learning unit, please checkout the git tag LU-02-theme-configurations or continue manually. Beginners are advised to follow the code examples and later checkout the git tag to see the final result.
+
+cd custom/plugins/AcademyTheme
+git checkout LU-02-theme-configurations
+
+Note
+If you haven’t cloned the AcademyTheme yet, please do so first and remember to install and activate it:
+
+cd custom/plugins
+git clone https://github.com/ShopwareAcademy/AcademyTheme.git
+
+# Go back to your shop root
+cd ../..
+bin/console plugin:refresh
+bin/console plugin:install AcademyTheme --activate
+
+cd custom/plugins/AcademyTheme
+git checkout LU-02-theme-configurations
+
+Change the Theme
+Per default, the Shopware default theme is assigned to all sales channels. If your theme is not assigned to a sales channel, you can do this in the administration or via a Shopware console command.
+
+
+
+Since we are lazy, we simply apply it to all sales channels with the following command:
+
+bin/console theme:change AcademyTheme --all
+
+But you can also assign it to a specific sales channel.
+
+bin/console theme:change AcademyTheme
+
+Then follow the prompt to select the sales channel.
+
+The theme.json File
+We already created a theme.json file in the previous unit so let’s take a closer look at it and the folder structure:
+
+└── themes
+    └── AcademyTheme
+        ├── src
+        │   ├── Resources
+        │   │   └── theme.json
+        │   └── AcademyTheme.php
+        └── composer.json
+
+The basic theme.json looks like this:
+
+{
+  "name": "AcademyTheme",
+  "author": "Shopware AG",
+  "description": {
+    "en-GB": "My custom theme",
+  },
+  "views": [
+     "@Storefront",
+     "@Plugins",
+     "@AcademyTheme"
+  ],
+  "previewMedia": "app/storefront/dist/assets/defaultThemePreview.jpg",
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@Storefront",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/swag-basic-example-theme.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "app/storefront/src/assets"
+  ],
+  "configInheritance": [
+    "@Storefront",
+    "@OtherTheme"
+    ]
+}
+
+The theme.json mostly consists of metadata about the theme, like the name, author, description, and preview image.
+
+The views array defines the order in which the theme’s views (Twig files) are loaded. The style and script arrays define the order in which the theme’s styles (SCSS) and scripts (JavaScript) are loaded.
+
+The asset array helps you organize your images and other static files you might need. The configInheritance array defines the order in which the theme’s configuration is inherited, since you can override configs from other themes.
+
+The last entry has the highest priority. For example, in the views section, this is important when your shop uses many plugins, because the order determines which Twig template overrides another.
+
+For an in depth explanation of the theme.json file, please refer to the official documentation.
+
+Input Color Field
+The color field is a common input field type that allows the user to select a color from a color picker. To add a color field to your theme, you need to add the following code to your theme.json file:
+
+{
+  //...
+  "config": {
+    "fields": {
+      "academy-color-status-neutral": {
+        "label": {
+          "en-GB": "Neutral status colour",
+          "de-DE": "Neutrale Status Farbe"
+        },
+        "type": "color",
+        "value": "#999999",
+        "editable": true,
+        "tab": "colours",
+        "block": "themeColours",
+        "section": "importantColours"
+      }
+    }
+  }
+}
+
+Note: Inherited Theme Fields
+Shopware themes automatically inherit configuration fields from their parent themes. This means that even if your own theme defines only a single color field (such as academy-color-status-neutral), you may still see additional fields such as primary, secondary, and others in the theme configuration.
+
+These inherited fields come from the core theme configuration located at vendor/shopware/storefront/theme.json
+
+Great, we can now check in our SCSS code for this value and apply it to the main navigation.
+
+Using the Color in SCSS
+To use the colors in your SCSS code, you simply use them as variables. They are injected during theme compilation. Here is an example of how to use the color in your SCSS code:
+
+.navigation {
+  background-color: $academy-color-status-neutral;
+}
+
+Reminder
+Place your custom SCSS rules inside your base.scss file.
+
+Managing the Settings View
+If you have more than a few configuration fields (4), you might want to group them and add tabs for a better overview.
+
+This can be done with sections (3), blocks (2), and tabs (1).
+
+
+
+Here is an example of how to group the color field in a section:
+
+{
+  "name": "Just another theme",
+  "author": "Just another author",
+
+  "config": {
+    "blocks": {
+      "themeColours": {
+        "label": {
+          "en-GB": "Theme colours",
+          "de-DE": "Theme Farben"
+        }
+      }
+    },
+    "sections": {
+      "importantColours": {
+        "label": {
+          "en-GB": "Important colours",
+          "de-DE": "Wichtige Farben"
+        }
+      }
+    },
+    "tabs": {
+      "colours": {
+        "label": {
+          "en-GB": "Colours",
+          "de-DE": "Farben"
+        }
+      }
+    },
+    "fields": {
+      "academy-color-status-neutral": {
+        "label": {
+          "en-GB": "Neutral status colour",
+          "de-DE": "Neutrale Status Farbe"
+        },
+        "type": "color",
+        "value": "#999999",
+        "editable": true,
+        "tab": "colours",
+        "block": "themeColours",
+        "section": "importantColours"
+      }
+    }
+  }
+}
+
+Shopware Console Commands
+You do need to compile the theme after you have added the configuration. Compiling a theme in Shopware involves processing the theme’s assets (like SCSS and JavaScript files) and generating the final output that will be used in the storefront. This process ensures that all changes made to the theme’s configuration and assets are applied and visible in the shop.
+
+This can be done with the Shopware console command theme:compile.
+
+Here is a list of all theme related CLI commands:
+
+Available commands for the "theme" namespace:
+  theme:change         Change the active theme for a sales channel
+  theme:compile        Compile the theme
+  theme:create         Create a new theme
+  theme:dump           Dump the theme configuration
+  theme:prepare-icons  Prepare the theme icons
+  theme:refresh        Refresh the theme configuration
+
+Final Result
+Ok, let’s see the final result. The field name is used in the SCSS file as a variable. So academy-color-status-neutral becomes $academy-color-status-neutral.
+
+We are simply using this color in the main navigation background to make it easier to identify.
+
+.main-navigation {
+  background-color: $academy-color-status-neutral;
+}
+
+bin/console theme:compile
+
+After compiling the theme, you should see the color change from white to a light gray (or color you set yourself in the administration) in the main navigation:
+
+
+
+Note
+Ensure that your theme is installed and activated before you run the bin/console theme:compile command.
+Keep in mind that you may need to run the bin/console cache:clear command after you have added new configuration fields.
+You can also use the bin/console theme:refresh command to refresh the theme configuration.
+You can also use the bin/console theme:dump command to see the theme configuration under [shop_root]/var/theme-files.json.
+Summary
+In this learning unit, you learned how to:
+
+Assign and activate your custom theme for one or all sales channels.
+Understand the structure and purpose of the theme.json file.
+Add custom configuration fields (e.g., color pickers) to your theme.
+Use those configuration values as SCSS variables in your styling.
+Organize settings with tabs, sections, and blocks for better usability.
+Compile and refresh your theme.
+With this knowledge, you can now create configurable themes that give shop owners and managers more control over the look and feel of their shop.
+
+_____________________________
+
+Override SCSS Variables
+
+Learning Objectives
+Understand how SCSS variable overrides work in Shopware.
+Customize existing SCSS variables.
+Learn how to ensure consistent styling across different components.
+Introduction
+This learning unit you will learn how to override SCSS variables in Shopware. SCSS variables are a powerful tool to customize your application in a global scope. They allow you to define a value once and use it in multiple places. This makes it easy to change the appearance of your application by changing just one value.
+
+Default values are defined in the variables.scss file. You can override these values in your theme by defining them in the overrides.scss file.
+
+Overriding SCSS Variables
+We already added the override file to our theme in the previous unit.
+
+{
+  "name": "AcademyTheme",
+  "author": "Shopware AG",
+  "description": {
+    "en-GB": "My custom theme",
+  },
+  "views": [
+     "@Storefront",
+     "@Plugins",
+     "@AcademyTheme"
+  ],
+  "previewMedia": "app/storefront/dist/assets/defaultThemePreview.jpg",
+  "style": [
+    "app/storefront/src/scss/overrides.scss", // This is the override file
+    "@Storefront",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/swag-basic-example-theme.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "app/storefront/src/assets"
+  ],
+  "configInheritance": [
+    "@Storefront",
+    "@OtherTheme"
+    ]
+}
+
+It is important to set the override file as the first file in the style array. This way you can be sure that your overrides are applied correctly.
+
+Real-World Example
+Your designer has created a new button style for your shop. The button should have a border-radius of 5px to fit with the rest of the design. You can easily change this by adding the following line to your overrides.scss file:
+
+$btn-border-radius: 5px;
+
+
+
+This works great for almost all buttons, but a few are missing. Let’s fix those as well.
+
+If we inspect the button in the browser, we can follow the Bootstrap hierarchy to find the correct variable to override. The button has a class btn btn-primary and the border-radius is defined in the btn.scss file.
+
+
+
+So we add the following lines to our overrides.scss file:
+
+$btn-border-radius-lg: 5px;
+
+The x button needs to be adjusted as well, it uses the sm for small:
+
+$btn-border-radius-sm: 5px;
+
+The image border-radius is defined in the image.scss file. We can override it by adding the following line to our overrides.scss file:
+
+$border-radius: 5px;
+
+Last but not least is the search field, which is a little more complex since it is overridden specifically in the search.scss file. We can override it by adding the following line to our base.scss file or our own search.scss file.
+
+.input-group > *:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+  border-radius: 0 5px 5px 0;
+}
+
+
+
+Check all views
+Be sure to check all common views for the changes you made. This way you can be sure that your changes are applied correctly and don’t affect other parts of your shop.
+
+E2E tests with image diffing can help you to check all views automatically.
+
+Summary
+In this learning unit, you learned how to:
+
+Use the overrides.scss file to override existing Shopware SCSS variables.
+Ensure that overrides are applied by loading them first in the style array in your theme.json file.
+Adjust common variables like button or border-radius values to match your custom design.
+Apply targeted SCSS rules when no common variable exists (e.g., for the search field).
+With this knowledge you can now confidently customize the visual design of your shop while keeping your styles consistent and maintainable across all components.
+
+_____________________________
+
+comments:
+
+
+Marten Stockenberg
+3 months ago
+(edited)
+i have a question related to the theme.json blocks like this:
+
+"blocks": {
+      "themeColours": {
+        "label": {
+          "en-GB": "Theme colours",
+          "de-DE": "Theme Farben"
+        }
+      }
+In the backend i can see that there a color fields displayed non editable in the theme configuration, where are they taken from?
+
+i see primary color, secondary color and so on but we only defined the neutral status color
+
+edit: found the answer
+
+it is extended from storefronts theme.json in vendor/shopware/storefront/theme.json
+
+  "config": {
+    "fields": {
+      "sw-color-brand-primary": {
+        "type": "color",
+        "value": "#0042a0",
+        "editable": true,
+        "block": "themeColors",
+        "order": 100
+      },
+Read less
+2
+1
+
+Thomas Brankaer
+8 months ago
+(edited)
+FYI, It seems that the 'main-navigation' and 'navigation' class selectors does not work Shopware 6.7.0.0 instances? I had to use 'nav-main' or 'main-navigation-menu instead'.
+
+Update: it seems SundS ITs has reported this already as well :)
+
+6
+1
+LV
+Lukas Völler
+9 months ago
+(edited)
+The folder structure at the beginning states, that the theme.json ist at:
+<plugin root>/src/Resources/config/theme.json.
+
+Shouldn't it be:
+<plugin root>/src/Resources/theme.json?
+
+Also first it is .navigation {...} and then .main-navigation {...}
+
+Read less
+9
+1
+
+
+Daniel Geike
+1 month ago
+Maybe this unit could als mention how to change the appearance (i. e. the padding) of elements that use Bootstrap's styling, e. g. buttons, something like that:
+
+<button class="btn my-button">Button text</button>
+.my-button {
+    --#{$prefix}-btn-padding-x: 1rem; // left + right
+    --#{$prefix}-btn-padding-y: 0.25rem; // top + bottom
+}
+This makes it possible to override styles in a more flexible manner - useful for creating your own components based on Bootstrap's/Shopware's base styling without affecting main components.
+
+2
+SP
+Stefan Pflaum
+6 months ago
+Why is the overrides.scss placed first in the theme.json? Wouldn't that make it the least important and @Storefront would override it?
+
+3
+1

@@ -1,0 +1,33 @@
+**Certification Test**
+**Shopware 6 Certified Frontend Developer – Certification**
+
+This learning path covers the fundamentals of Shopware storefront development – from Twig templates and SCSS styling to storefront JavaScript and theme creation. Developers gain the skills needed to design, extend, and professionally maintain individual storefronts.
+
+**The Learning Path**
+The learning path provides a hands-on guide through all relevant frontend technologies in Shopware. It starts with the basics of the Twig templating system: extending templates, overriding blocks, and using key Twig features. This is followed by working with SCSS for consistent styling and integrating storefront JavaScript for dynamic behavior. The theme development section shows how to create, configure, and maintain custom themes. The path is rounded off by testing and debugging strategies using Playwright and browser DevTools. Upon completion, participants are optimally prepared for the certification exam.
+
+**The Certification**
+The "Certified Frontend Developer" certificate demonstrates solid knowledge in Shopware storefront development. It validates the ability to customize templates, design styles, integrate JavaScript plugins, and create custom themes. The certification is aimed at developers, agencies, and freelancers who want to formally document their frontend expertise.
+
+**The Certification Exam**
+The exam consists of 50 multiple-choice questions and must be completed online within 30 minutes. The topics tested cover the content taught in the learning path: Twig templating, SCSS styling, storefront JavaScript, theme development, as well as testing and debugging. Each question has exactly one correct answer.
+
+**Program Details:**
+- Confidently extend and override Twig templates
+- Locate and selectively customize Twig blocks
+- Organize SCSS structure using the 7-1 pattern
+- Use Bootstrap components and utility classes
+- Create and register storefront JavaScript plugins
+- Extend or override existing JS plugins
+- Create themes and configure them via theme.json
+- Override SCSS variables for consistent design
+- Write and execute Playwright E2E tests
+
+**Target Audience:**
+- Frontend developers
+- Full-stack developers
+
+**Prerequisites for the Training:**
+- Basic knowledge of HTML, CSS, and JavaScript
+- A running Shopware 6 installation
+- Basic familiarity with the command line

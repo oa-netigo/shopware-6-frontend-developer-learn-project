@@ -1,0 +1,419 @@
+/* ============================================================
+   SHOPWARE LEARN — Global Styles
+   ============================================================ */
+
+/* Design Tokens */
+:root {
+  --sw-blue:        #189eff;
+  --sw-blue-dark:   #0f7acc;
+  --sw-blue-light:  #e8f5ff;
+  --sw-dark:        #0d2438;
+  --sw-dark-alt:    #1a3a52;
+  --sw-dark-3:      #2d5470;
+  --sw-light-bg:    #f4f8fc;
+  --sw-border:      #d0e4f5;
+  --sw-success:     #28a745;
+  --sw-success-bg:  #e8f5ec;
+  --sw-danger:      #dc3545;
+  --sw-danger-bg:   #fde8ea;
+  --sw-warning:     #f0ad00;
+  --sw-warning-bg:  #fff8e1;
+  --sw-muted:       #6c8fa8;
+  --text-primary:   #0d2438;
+  --text-secondary: #3d5a72;
+  --text-muted:     #6c8fa8;
+  --radius:         8px;
+  --radius-lg:      12px;
+  --radius-xl:      18px;
+  --shadow-sm:      0 1px 4px rgba(13,36,56,0.08);
+  --shadow:         0 2px 12px rgba(13,36,56,0.10);
+  --shadow-lg:      0 4px 24px rgba(13,36,56,0.14);
+  --transition:     0.2s ease;
+  --header-h:       64px;
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-primary);
+  background: var(--sw-light-bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--sw-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul, ol { padding-left: 1.5rem; }
+p { margin-bottom: 0.75rem; }
+p:last-child { margin-bottom: 0; }
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.container-sm {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   Header / Nav
+   ============================================================ */
+.app-header {
+  background: var(--sw-dark);
+  height: var(--header-h);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.app-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.3px;
+}
+.brand-mark {
+  background: var(--sw-blue);
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.main-nav a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background var(--transition), color var(--transition);
+}
+.main-nav a:hover,
+.main-nav a.active {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+.main-nav a.active {
+  background: rgba(24,158,255,0.2);
+  color: var(--sw-blue);
+}
+
+/* Hamburger (mobile) */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #fff;
+  flex-direction: column;
+  gap: 5px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background var(--transition), color var(--transition),
+              border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition);
+  text-decoration: none !important;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-primary {
+  background: var(--sw-blue);
+  color: #fff;
+  border-color: var(--sw-blue);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--sw-blue-dark);
+  border-color: var(--sw-blue-dark);
+  box-shadow: 0 4px 12px rgba(24,158,255,0.3);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--sw-blue);
+  border-color: var(--sw-blue);
+}
+.btn-outline:hover:not(:disabled) {
+  background: var(--sw-blue-light);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--sw-border);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: #fff;
+  color: var(--text-primary);
+}
+.btn-success {
+  background: var(--sw-success);
+  color: #fff;
+  border-color: var(--sw-success);
+}
+.btn-danger {
+  background: var(--sw-danger);
+  color: #fff;
+  border-color: var(--sw-danger);
+}
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+}
+.btn-lg {
+  padding: 13px 28px;
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
+}
+.btn-block { width: 100%; }
+
+/* ============================================================
+   Cards
+   ============================================================ */
+.card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--sw-border);
+  overflow: hidden;
+}
+.card-body { padding: 24px; }
+.card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--sw-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--sw-border);
+  background: var(--sw-light-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* ============================================================
+   Badges
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.badge-blue   { background: var(--sw-blue-light); color: var(--sw-blue-dark); }
+.badge-green  { background: var(--sw-success-bg); color: #1a7a33; }
+.badge-red    { background: var(--sw-danger-bg);  color: #a82030; }
+.badge-yellow { background: var(--sw-warning-bg); color: #8a6200; }
+.badge-muted  { background: #eef2f7; color: var(--sw-muted); }
+
+/* ============================================================
+   Progress Bar
+   ============================================================ */
+.progress-wrap {
+  background: #e8eef5;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 8px;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--sw-blue), #42b4ff);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+}
+.progress-bar.success { background: linear-gradient(90deg, var(--sw-success), #45c86a); }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   Alert / Info Boxes
+   ============================================================ */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  border-left: 4px solid;
+  margin-bottom: 16px;
+}
+.alert-info    { background: var(--sw-blue-light); border-color: var(--sw-blue); color: var(--sw-dark-alt); }
+.alert-success { background: var(--sw-success-bg); border-color: var(--sw-success); color: #1a5c28; }
+.alert-danger  { background: var(--sw-danger-bg);  border-color: var(--sw-danger); color: #7a1520; }
+.alert-warning { background: var(--sw-warning-bg); border-color: var(--sw-warning); color: #6b4a00; }
+
+/* ============================================================
+   Typography helpers
+   ============================================================ */
+.text-muted   { color: var(--text-muted); }
+.text-blue    { color: var(--sw-blue); }
+.text-success { color: var(--sw-success); }
+.text-danger  { color: var(--sw-danger); }
+.text-sm      { font-size: 0.875rem; }
+.text-xs      { font-size: 0.78rem; }
+.text-lg      { font-size: 1.1rem; }
+.text-xl      { font-size: 1.25rem; }
+.text-2xl     { font-size: 1.5rem; }
+.font-bold    { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+
+/* Page heading area */
+.page-hero {
+  background: linear-gradient(135deg, var(--sw-dark) 0%, var(--sw-dark-alt) 100%);
+  color: #fff;
+  padding: 48px 0 40px;
+}
+.page-hero h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.page-hero p {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ============================================================
+   Utility
+   ============================================================ */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.w-full { width: 100%; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-6 { margin-top: 24px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.p-4 { padding: 16px; }
+.p-6 { padding: 24px; }
+.hidden { display: none !important; }
+
+/* ============================================================
+   Code Blocks (Prism override/complement)
+   ============================================================ */
+pre[class*="language-"] {
+  border-radius: var(--radius);
+  margin: 16px 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+code:not([class]) {
+  background: #e8f0f9;
+  color: var(--sw-dark-alt);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Consolas, monospace;
+}
+
+/* ============================================================
+   Responsive — 768px
+   ============================================================ */
+@media (max-width: 768px) {
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: var(--header-h);
+    left: 0; right: 0;
+    background: var(--sw-dark);
+    flex-direction: column;
+    padding: 12px;
+    gap: 4px;
+    border-top: 1px solid var(--sw-dark-3);
+    box-shadow: var(--shadow-lg);
+  }
+  .main-nav.open { display: flex; }
+  .main-nav a { padding: 10px 16px; width: 100%; }
+  .nav-toggle { display: flex; }
+  .app-header { position: relative; }
+  .container { padding: 0 16px; }
+}
+
+/* ============================================================
+   Responsive — 480px
+   ============================================================ */
+@media (max-width: 480px) {
+  .page-hero h1 { font-size: 1.4rem; }
+  .btn-lg { padding: 11px 20px; font-size: 0.95rem; }
+}

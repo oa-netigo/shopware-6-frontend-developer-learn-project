@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flashcards — SW Learn</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/flashcards.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">SW</span> Learn
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Dashboard</a>
+        <a href="flashcards.html" class="active">Flashcards</a>
+        <a href="exam.html">Exam</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Controls bar -->
+  <div class="fc-controls">
+    <div class="container">
+      <div class="fc-controls-inner">
+        <div class="fc-filter">
+          <label for="moduleFilter" style="font-size:0.875rem;font-weight:600;color:var(--text-muted)">Module:</label>
+          <select id="moduleFilter" onchange="filterModule(this.value)">
+            <option value="all">All Modules (60 cards)</option>
+            <!-- Options rendered by flashcards.js -->
+          </select>
+        </div>
+        <div class="fc-stats">
+          <span class="fc-stat">Total: <strong id="totalCount">0</strong></span>
+          <span class="fc-stat known">Known: <strong id="knownCount">0</strong></span>
+          <span class="fc-stat">Remaining: <strong id="remainingCount">0</strong></span>
+        </div>
+        <div class="fc-actions">
+          <button class="btn btn-ghost btn-sm" onclick="shuffleDeck()">🔀 Shuffle</button>
+          <button class="btn btn-ghost btn-sm" onclick="resetKnown()">↩ Reset Known</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flashcards page -->
+  <div class="flashcards-page">
+    <div class="flashcards-body" id="flashcardsBody">
+      <!-- Rendered by flashcards.js -->
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/flashcards.js"></script>
+</body>
+</html>

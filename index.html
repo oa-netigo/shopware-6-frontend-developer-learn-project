@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SW Learn — Shopware 6 Frontend Developer</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">SW</span> Learn
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="active">Dashboard</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="exam.html">Exam</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="dashboard-hero">
+    <div class="container">
+      <h1>Shopware 6 Frontend Developer</h1>
+      <p class="subtitle">Interactive learning path for the Certified Frontend Developer exam</p>
+
+      <div class="overall-progress" id="overallProgress">
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring" width="68" height="68" viewBox="0 0 68 68">
+            <circle class="progress-ring-track" cx="34" cy="34" r="26"/>
+            <circle class="progress-ring-fill" id="ringFill" cx="34" cy="34" r="26"/>
+            <text class="progress-ring-text" id="ringText" x="34" y="34">0%</text>
+          </svg>
+        </div>
+        <div class="overall-progress-info">
+          <h3 id="progressTitle">Start your learning journey</h3>
+          <p id="progressSubtitle">Complete all 4 modules and take the certification exam</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="dashboard-content">
+    <div class="container">
+
+      <!-- Modules -->
+      <div class="section-heading">
+        <h2>Learning Modules</h2>
+        <span class="badge badge-muted" id="modulesBadge">4 modules</span>
+      </div>
+      <div class="modules-grid" id="modulesGrid">
+        <!-- Rendered by dashboard.js -->
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions-grid">
+          <a href="exam.html" class="quick-action-card">
+            <div class="qa-icon exam">🎓</div>
+            <div class="qa-info">
+              <h4>Certification Exam</h4>
+              <p>50 questions · 30 minutes</p>
+            </div>
+          </a>
+          <a href="flashcards.html" class="quick-action-card">
+            <div class="qa-icon cards">📚</div>
+            <div class="qa-info">
+              <h4>All Flashcards</h4>
+              <p>60 cards across all modules</p>
+            </div>
+          </a>
+          <a href="quiz.html?module=module-1" class="quick-action-card">
+            <div class="qa-icon quiz">❓</div>
+            <div class="qa-info">
+              <h4>Practice Quiz</h4>
+              <p>10 questions per module</p>
+            </div>
+          </a>
+          <a href="reader.html?module=module-1" class="quick-action-card">
+            <div class="qa-icon">📖</div>
+            <div class="qa-info">
+              <h4>Course Reader</h4>
+              <p>Read course content with examples</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Exam Status -->
+        <div class="exam-status-area" id="examStatusArea">
+          <div class="exam-status-info">
+            <h3 id="examStatusTitle">Ready to take the exam?</h3>
+            <p id="examStatusSub">50 multiple-choice questions · 30 minutes · 70% to pass</p>
+          </div>
+          <a href="exam.html" class="btn btn-primary" id="examCta">Start Exam</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+SCSS and Storefront JavaScript
+Introduction
+Customizing the look and behavior of your Shopware Storefront is a key part of creating a unique shopping experience. This course introduces you to the fundamentals of Storefront styling and interactivity in Shopware.
+
+You will learn how to structure and organize SCSS for maintainable styling, and how to use Storefront JavaScript to add dynamic behavior or extend existing features. Step by step, we will explore how these two layers – styling and interactivity – work together to shape the overall user experience.
+
+By the end of this course, you will have a solid understanding of how to build clean, structured, and interactive Storefronts using SCSS and JavaScript.
+
+_____________________________
+
+Custom SCSS
+
+Learning Objectives
+Add custom SCSS to your Shopware theme.
+Understand the hierarchy of SCSS files in Shopware.
+Know where to add custom SCSS files.
+Know how to use Bootstrap in Shopware.
+Introduction
+One of the first things you hear when a new shop is created is that the design is not quite right. The colors are not matching the brand, and the font might not be the right one. This is where SCSS comes into play. SCSS is a powerful CSS preprocessor to customize the appearance of your Shopware shop.
+
+Some basic visual settings, such as logos or new colors, can be changed through the theme configuration in the administration. For anything beyond these basic options – for example, detailed typography, custom layouts, or component-specific styling, you typically use SCSS.
+
+SCSS Folder Structure
+Before we start with adding all sorts of SCSS files, let’s have a look at the folder structure. Typically, you start with just a few color and padding changes, but this can quickly grow into a big project. So it is good to know where to put your files and what folders you should use.
+
+Shopware recommends following the 7–1 pattern. This means you have seven folders and one file. The folders are:
+
+Note
+The folder structure here follows the 7–1 pattern as a recommended best practice for organizing large SCSS codebases.
+
+Shopware does not generate these folders automatically when creating a new theme.
+
+Files such as utils/_variables.scss, utils/_mixins.scss, or component-level SCSS files only exist if you create them yourself as part of your own structure.
+
+└── custom
+    └── plugins
+        └── MyTheme
+            └── src
+                └── Resources
+                    └── app
+                        └── storefront
+                            └── src
+                                └── scss
+                                    ├── base
+                                    ├── components
+                                    ├── layout
+                                    ├── pages
+                                    ├── themes
+                                    ├── utils
+                                    └── vendors
+
+All SCSS files belong under src/Resources/app/storefront/src/scss. The main file is the base.scss, which acts as the entry point for your SCSS code. It should import all the other files, keeping your styles modular, organized, and easy to maintain.
+
+For more details on SCSS in Shopware, check out the official docs.
+
+Note
+If you are unsure of what to put in which folder, check out the shopware repository on GitHub or check out where specific CSS changes are put in the browser developer console.
+
+Here is an example of a common SCSS folder structure inside a plugin.
+
+Example: SCSS Folder Structure in a Plugin
+<plugin root>
+├── composer.json
+└── src
+    ├── Resources
+    │   └── app
+    │       └── storefront
+    │           └── src
+    │               └── scss
+    │                    ├── base.scss // SCSS entry
+    │                    ├── base
+    │                    │   ├── _typography.scss
+    │                    │   └── ...
+    │                    ├── components
+    │                    │    ├── _buy-widget.scss
+    │                    │    ├── _promotion-section.scss
+    │                    │    ├── _cross-selling-slider.scss
+    │                    │    └── ...
+    │                    ├── layout
+    │                    │    ├── _main-navigation.scss
+    │                    │    ├── _grid.scss
+    │                    │    ├── _header.scss
+    │                    │    ├── _footer.scss
+    │                    │    └── ...
+    │                    ├── pages
+    │                    │    ├── _product-detail.scss
+    │                    │    ├── _checkout.scss
+    │                    │    ├── _account.scss
+    │                    │    ├── _startpage.scss
+    │                    │    └── ...
+    │                    ├── themes
+    │                    │    ├── _brand-default.scss
+    │                    │    ├── _dark-mode.scss
+    │                    │    └── ...
+    │                    ├── utils
+    │                    │    ├── _variables.scss
+    │                    │    ├── _mixins.scss
+    │                    │    └── ...
+    │                    └── vendors
+    │                        └── _vendor-lib.scss
+    │
+    └── AcademyCustomCss.php
+
+Each folder has a clear purpose:
+
+The base subfolder: In this folder, you can create SCSS files which belong to the base of your shop, like the typography.
+The components subfolder: In this folder, you can create SCSS files which belong to a specific UI component, like the buy-widget or sliders.
+The layout subfolder: In this folder, you can create SCSS files which belong to the layout of your shop, like the header, footer, main navigation, or the grid.
+The pages subfolder: In this folder, you can create SCSS files which belong to a specific shop page, like the product-detail-page or the startpage, for layout changes.
+The themes subfolder: In this folder, you can create SCSS files which belong to a specific theme, like the brand-default, the brand-custom, or for Dark/Light mode.
+The vendors subfolder: In this folder, you can create SCSS files to integrate external SCSS libraries. For example, Shopware Core uses it like this to import Bootstrap.
+The utils subfolder: In this folder, you can create helper SCSS files such as variables and mixins which are used across all of your SCSS files.
+In a custom 7–1 based setup, the utils folder often contains two key files that you create yourself:
+
+The variables.scss file is used to define global values for your Shop like colors, spacing, breakpoints, font sizes.
+The mixins.scss files is used to define reusable functions (mixins) that can be included in other SCSS files.
+// In variables.scss
+$shop-primary-color: #0d6efd;  // Shop's primary color
+$shop-secondary-color: #6c757d; // Shop's secondary color
+$shop-tertiary-color: #20c997; // Shop's tertiary color
+$shop-primary-color-negative: #ffffff; // Shop's primary color negative
+
+$spacer: 1rem;
+
+The mixins.scss file is used to define reusable functions. You can use @mixin to define a function and @include to use it. In addition, you can mix it with media queries to define different styles for different screen sizes.
+// In mixins.scss
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: 576px) { @content; }
+  }
+  @if $breakpoint == md {
+    @media (max-width: 768px) { @content; }
+  }
+}
+
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+//Usage in another file
+.my-container {
+  @include respond-to(md) {
+    padding: $spacer;
+  }
+}
+
+In the base.scss file, you can import all the other files. It will look like this:
+
+// In base.scss
+/* Utils */
+@import "utils/variables";
+@import "utils/mixins";
+
+/* Optional: vendors */
+@import "vendors/vendor-lib";
+
+/* Base and Layout */
+@import "base/typography";
+@import "layout/main-navigation";
+@import "layout/header";
+@import "layout/footer";
+@import "layout/grid";
+
+/* Components */
+@import "components/buy-widget";
+@import "components/promotion-section";
+@import "components/cross-selling-slider";
+
+/* Pages */
+@import "pages/product-detail";
+@import "pages/checkout";
+@import "pages/account";
+@import "pages/startpage";
+
+/* Optional: Themes */
+@import "themes/brand-default";
+@import "themes/dark-mode";
+
+Note
+In modern Sass (Dart Sass), @import is deprecated and replaced by @use / @forward.
+
+However, Shopware does not use Dart Sass. It uses scssphp, a PHP-based SCSS compiler supports more advanced functionality and relies on the @import syntax.
+
+That’s why you will see @import consistently in Shopware projects, and it’s the correct approach here.
+
+Adding the Right SCSS File
+You can use our example plugin from the GitHub repository or create it from scratch to get more familiar with the process.
+
+git clone --branch LU-01-custom-css git@github.com:ShopwareAcademy/AcademyCustomCss.git
+
+Your shop should now have a blue background.
+
+
+
+It is pretty basic, but it shows you how to add a custom SCSS file to your theme. You can use a theme, a plugin or an app to achieve that. The SCSS file will be compiled and added to your shop. If you are unsure of what is best for your use case, check out this article.
+
+If you are planning to override default colors, fonts, or paddings, you should use a theme. If you are planning to add a new feature that just has some styling, you should use a plugin or app.
+
+Troubleshooting
+Issues with SCSS not showing up in your shop? Here are some common problems:
+
+Is your theme, plugin, or app installed and activated?
+Plugin and Theme: bin/console plugin:install --activate <PluginName/ThemeName>
+App: bin/console app:install --activate <AppName>
+Did you assign the right theme to your shop (bin/console theme:change)?
+Did you add the SCSS file to the right location?
+Did you recompile the Theme (bin/console theme:compile)?
+Did you clear the cache (bin/console cache:clear)?
+Finding the Right SCSS File
+If you have multiple extensions installed, finding the right SCSS file can be a bit tricky. You have to know where to look and what to look for. The best way to find the right SCSS file is to use the browser developer console. But this is only possible in the watching mode. So you have to start the watcher and then open the developer console. Then you can inspect the elements and see which SCSS file is responsible for the styling.
+
+If, for example, you are inspecting the body tag in the default compiled theme, this will only show the all.css file. This is because the all.css file is the compiled version of all the SCSS files.
+
+If you want to see the SCSS file responsible for the body tag, you have to inspect the body tag in the watcher mode. For that, run the following command in your shop’s root directory:
+
+bin/watch-storefront.sh
+
+Using Environments
+If you are using DevEnv, make sure you start the watcher inside the DevEnv shell:
+
+devenv shell
+
+Then run the watcher from your shop’s root directory.
+
+If you are using a custom environment setup, you might need additional configuration for the watcher. In this case, please refer to your environment’s documentation, as the required steps may differ.
+
+This will start the watcher, and you can now inspect the body tag and see which SCSS file is responsible for the styling. The watcher recompiles your SCSS files automatically when you make changes.
+
+The default Port for the watcher is 9998, so you can open the developer console at localhost:9998 and inspect the body tag.
+
+Requirements for the Watcher
+The storefront watcher script relies on a few tools being available in your environment: Node.js, npm, and jq.
+
+If bin/watch-storefront.sh fails or exits immediately, double-check that these tools are installed.
+
+
+
+Usage Example: Remove Border in Product Listing Boxes
+The blue background might be a little much, but quickly shows that the SCSS file is working. Now let’s do something more useful.
+
+We will remove the border from the product boxes in the listing and add a background color to the main navigation. This emphasizes the products more and makes the navigation more visible.
+
+.product-box {
+  border:0;
+}
+
+.main-navigation {
+  background-color: #ececec;
+}
+
+cd custom/plugins/AcademyCustomCss
+git checkout -b LU-01-custom-css-navigation
+cd ../../.. && bin/console theme:compile
+
+
+
+This is where we leave off for now. We will continue with this in the next course, Theme development.
+
+External learning sources
+https://developer.mozilla.org/de/docs/Web/CSS
+
+https://sass-lang.com
+
+Excursus: Bootstrap
+Shopware uses Bootstrap as its CSS framework. This means you don’t need to install Bootstrap by yourself.
+Bootstrap provides a lot of useful responsive components, grid system and utility classes and much more. This means you don’t need to write everything from scratch by yourself.
+
+Typically, you use Bootstrap directly in your HTML Elements. For example, to create a grid layout and add buttons.
+
+Example: Grid System
+<div class="row">
+  <div class="col-md-4">
+    <p>Column at left</p>
+  </div>
+  <div class="col-md-4">
+    <p>Column in middle</p>
+  </div>
+  <div class="col-md-4">
+    <p>Column at right</p>
+  </div>
+</div>
+
+The row class is used to create a row. The col-md-4 class is used to create a column with a width of 4. The maximum width is 12, so you have a row with three same-sized columns. If you, for example, want only two columns, you can use col-md-6.
+
+<div class="row">
+  <div class="col-md-6">
+    <p>Column at left</p>
+  </div>
+  <div class="col-md-6">
+    <p>Column at right</p>
+  </div>
+</div>
+
+Example: Buttons
+<div class="row">
+  <a href="#" class="btn btn-primary">Primary</a>
+  <a href="#" class="btn btn-secondary">Secondary</a>
+  <a href="#" class="btn btn-success">Success</a>
+  <a href="#" class="btn btn-danger">Danger</a>
+  <a href="#" class="btn btn-warning">Warning</a>
+  <a href="#" class="btn btn-info">Info</a>
+  <a href="#" class="btn btn-light">Light</a>
+  <a href="#" class="btn btn-dark">Dark</a>
+  <a href="#" class="btn btn-link">Link</a>
+</div>
+
+The btn class is used to create a button. The btn-primary class is used to create a primary button and so on. You can find a list of all available classes here.
+
+Example: Utility Classes
+You can use utility classes to change the appearance of your elements. For example, for text alignment or for margin and padding.
+
+<div class="m-2 p-2">
+  <p class="text-center">Centered text</p>
+  <p class="text-end">Right aligned text</p>
+  <p class="text-start">Left aligned text</p>
+</div>
+
+These are a few examples. Bootstrap offers much more. To dive deeper into Bootstrap, check out the official documentation.
+
+Summary
+In this learning unit, you learned how to:
+
+Organize SCSS files in a Shopware plugin or theme using the 7–1 pattern.
+Define global variables and mixins for consistent and reusable styling.
+Add and compile custom SCSS into your Shopware Storefront.
+Use a watcher to debug and identify SCSS sources.
+Leverage Bootstrap’s grid, components, and utility classes.
+With this knowledge, you can start adapting the Shopware Storefront design to match brand requirements and build more maintainable styles.
+
+_____________________________
+
+Custom Storefront Javascript
+
+Learning Objectives
+Understand the storefront JavaScript plugin system in Shopware.
+Know the folder structure for custom storefront JavaScript.
+Learn how to add custom storefront JavaScript to your shop.
+Learn how to override existing storefront JavaScript plugins.
+Understand the difference between synchronous and asynchronous storefront JavaScript plugins.
+Introduction
+Styling your shop is great, but sometimes you need to change the behavior of your shop as well. This is where storefront JavaScript comes into play.
+
+In this learning unit, we will learn how to add custom storefront JavaScript to your Shopware shop.
+
+Storefront vs. Administration JavaScript
+Shopware has two main JavaScript layers:
+
+Storefront JavaScript controls the behavior and interactivity of the Shopware storefront (what the customer sees).
+Administration JavaScript extends and customizes the Shopware Admin panel (what shop owners and managers see).
+In this learning path, we will focus on the storefront JavaScript. The administration JavaScript will be covered in the next learning path.
+
+Storefront JavaScript in Shopware
+In Shopware, storefront JavaScript is integrated through a custom JavaScript plugin system built by Shopware. This system provides a clear structure for writing and organizing your custom JavaScript code in a maintainable way. For that, Shopware provides its PluginManager, which is responsible for loading JavaScript plugins. With it, you can add (register) new features or extend (override) existing features in a structured way without breaking the Shopware 6 JavaScript core.
+
+Shopware storefront JavaScript uses modern ES6+ features (e.g., import, export, class, async/await). This means you can write your code in any modern JavaScript way, and Shopware ensures the compatibility with all major browsers.
+
+Important: jQuery Removed From Shopware 6.5+ core
+Since Shopware version 6.5, jQuery is no longer used in Shopware JavaScript core (read here).
+If you are using jQuery in your JavaScript plugins, you need to migrate to vanilla JavaScript. If you need jQuery for legacy plugins, you have to include it by adding the following line to your plugin:
+
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_body_script %}
+    {{ parent() }}
+    <!-- Include jQuery here -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+Getting Started: GitHub, CLI, or From Scratch
+If you are already quite familiar with JavaScript and Shopware, you might want to write your code from scratch. If you are a beginner, it is recommended to use a Shopware console command to generate a new storefront JavaScript plugin. Or you can use the example plugin from the documentation here to get a quick start.
+
+GitHub
+We will always start from your Shopware root directory in all of our development examples. This saves us lots of comments and explanations.
+
+cd custom/plugins
+git clone git@github.com:ShopwareAcademy/AcademyCustomJs.git
+cd AcademyCustomJs
+git checkout LU-02-custom-js-add
+
+CLI
+With the Shopware console command bin/console plugin:create, you can be sure that all necessary files are created in the correct location. Run the following command in your Shopware root directory:
+
+bin/console plugin:create AcademyCustomJs
+
+This command will create a new plugin called AcademyCustomJs in the [your_shop_root]/custom/plugins directory. During the interactive setup, you can choose the example storefront JavaScript plugin to get a better understanding of how a plugin is structured.
+
+Do you want to create an example javascript plugin? (yes/no) [yes]:
+
+Whenever you create the plugin using the CLI or clone it, you need to refresh the plugin list and install the plugin:
+
+bin/console plugin:refresh
+bin/console plugin:install AcademyCustomJs --activate
+
+Create a JavaScript Plugin Only
+You can also create a JavaScript plugin in an existing plugin by running the following command in your Shopware root directory:
+
+bin/console make:plugin:javascript-plugin
+
+When executing this command, you will be asked to choose the name of the plugin in which you want to generate the JavaScript plugin.
+
+File and Folder Structure
+The basic file and folder structure of a storefront JavaScript plugin looks like:
+
+└── custom
+    └── plugins
+        └── AcademyCustomJs
+            ├── src
+            │   └── Resources
+            │       └── app
+            │           └── storefront
+            │               └── src
+            │                │── example-plugin
+            │                │  └── example-plugin.plugin.js
+            │                └── main.js // <-- Entry point
+            └── composer.json
+
+All storefront JavaScript files are located in the <Plugin root>/src/Resources/app/storefront/src directory. In this case AcademyCustomJs/src/Resources/app/storefront/src or the full path from your shop root directory it is [your_shop_root]/custom/plugins/AcademyCustomJs/src/Resources/app/storefront/src.
+
+The main.js File
+The main.js file is the entry point of your storefront JavaScript plugin (similar to the base.scss file for SCSS). The main.js is used to load your custom JavaScript plugins by using the PluginManager to register a new plugin with the Shopware storefront.
+
+// Import all necessary Storefront plugins
+import ExamplePlugin from './example-plugin/example-plugin.plugin';
+
+// Register your plugin via the existing PluginManager
+const PluginManager = window.PluginManager;
+
+PluginManager.register('ExamplePlugin', ExamplePlugin, '[data-example-plugin]');
+
+The PluginManager.register takes three arguments:
+
+Plugin name: A unique name for the plugin.
+Plugin class: The class that defines the plugin’s behavior.
+Selector (optional): A CSS selector that tells which HTML element this plugin should be attached to. This means you can add the class name, the ID, or attributes of an HTML element to “link” storefront JavaScript plugins to specific HTML elements.
+The example-plugin.plugin.js File
+The example-plugin.plugin.js file is the main file of your storefront JavaScript plugin. This is where you write your JavaScript code.
+
+import Plugin from 'src/plugin-system/plugin.class';
+
+export default class ExamplePlugin extends Plugin {
+    init() {
+        window.addEventListener('scroll', this.onScroll.bind(this));
+        console.log('Hello from the example plugin');
+    }
+
+    onScroll() {
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+            alert('Seems like there\'s nothing more to see here.');
+        }
+    }
+}
+
+Every custom storefront JavaScript plugin needs to extend the Plugin class. This class provides a lot of useful methods and properties that you can use to write your own storefront JavaScript plugins.
+
+Every storefront JavaScript plugin has the init() method, which is called when the plugin is initialized, so it is the “execution point.” In this method, you can add event listeners, add custom functionality, or do anything else you want.
+
+Linking the Storefront JavaScript Plugin to the Template
+To test the storefront JavaScript plugin, we need to link (register) it to the storefront. For our simple test, we did it with the custom data attribute [data-example-plugin]. Now Shopware will look for this attribute in the HTML and attach the storefront JavaScript plugin to the element.
+
+If you create the plugin with the Shopware console command, you will find the custom data attribute in the following location:
+
+└── custom
+    └── plugins
+        └── AcademyCustomJs
+            ├── src
+            │   └── Resources
+            │       └── views
+            │           └── storefront
+            │               └── page
+            │                   └── content
+            │                       └── index.html.twig // <-- Here
+            └── ...
+
+The index.html.twig file should contain the following code:
+
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block base_main_inner %}
+    {{ parent() }}
+
+    <template data-example-plugin></template>
+{% endblock %}
+
+You see the template element, which has the custom data attribute data-example-plugin. We used this attribute to link the storefront JavaScript plugin to this element in the storefront. This way, you decide which elements in the storefront should have encapsulated functionality.
+
+The template element is a neutral container that does not render any visible content by default. This makes it ideal for linking storefront JavaScript plugins because you can safely attach behavior without adding extra markup to your HTML.
+
+However, you can also use any other HTML element (div, span, button, etc.) to link your storefront JavaScript plugin to something visible on the page. The important part is that the selector (class, ID, or attribute) is registered correctly in the main.js file.
+
+Storefront Behavior: Example From the GitHub Repository
+If you are using the GitHub repository, the compiled sources under the dist folder (custom/plugins/AcademyCustomJs/src/Resources/app/storefront/dist/storefront/js/academy-custom-js/academy-custom-js.js) should already be present.
+
+Now, when you scroll to the bottom of the startpage in your shop, you should see the alert.
+
+
+
+Building the Storefront
+The bin/build-storefront.sh Command
+If you are working on the plugin from scratch, you need to build the storefront first. Run the following command in your Shopware root directory:
+
+bin/build-storefront.sh
+
+The dist Folder
+If you run the bin/build-storefront.sh command, the dist folder will be created. This folder contains all compiled files for the storefront that Shopware loads.
+
+In short:
+
+You write your storefront JavaScript plugins in the src folder.
+Then run bin/build-storefront.sh in your Shopware root directory.
+Shopware loads your compiled/updated storefront JavaScript from the dist folder.
+The bin/watch-storefront.sh Command
+Shopware provides a bin/watch-storefront.sh command that starts a development server. It recompiles storefront JavaScript and SCSS automatically when you make file changes, so you don’t have to manually run the build-storefront.sh script after every change.
+
+bin/watch-storefront.sh
+
+This is very useful for development, but it does not build the storefront and does not update the dist folder. For that you need to run the bin/build-storefront.sh manually.
+
+Extending an Existing Plugin
+A more day-to-day example for storefront JavaScript plugins is to extend an existing plugin. For example, you might want to add a new feature to the AddToCartPlugin or overwrite an existing feature.
+
+The offcanvas cart is a good example of this, some shops do not want to show the offcanvas cart when a product is added to the cart. For instance, to avoid distractions for the customer or to make the checkout process quicker (for deals that are only available for a short time).
+
+Existing Storefront Plugins
+Shopware provides many storefront JavaScript plugins in its core for the storefront. You can find them in this doc.
+
+Example: AddToCartPlugin
+To extend the AddToCartPlugin you can create a new plugin that extends the existing one. This way you can overwrite the existing methods and add new ones.
+
+Create a New Folder and File
+└── custom
+    └── plugins
+        └── AcademyCustomJs
+            ├── src
+            │   └── Resources
+            │       └── app
+            │           └── storefront
+            │               └── src
+            │                │── example-plugin
+            │                │  └── example-plugin.plugin.js
+            │                │── custom-add-to-cart // <-- New folder
+            │                │  └── custom-add-to-cart.plugin.js // <-- New file
+            │                └── main.js // <-- Entry point
+            └── composer.json
+
+You see that we created a new folder custom-add-to-cart and a new file custom-add-to-cart.plugin.js.
+
+Now we want to override the _openOffCanvasCart method to prevent the offcanvas cart from opening.
+
+import AddToCartPlugin from 'src/plugin/add-to-cart/add-to-cart.plugin';
+
+export default class CustomAddToCartPlugin extends AddToCartPlugin {
+    _openOffCanvasCart() {
+        // Override the method to prevent opening the offcanvas cart
+        console.log('Item added to cart without opening offcanvas');
+    }
+
+}
+
+You see that we import the AddToCartPlugin from the src/plugin/add-to-cart/add-to-cart.plugin file instead the plugin import Plugin from 'src/plugin-system/plugin.class'. This file contains the original AddToCartPlugin class that we want to override/extend. The AddToCartPlugin has the _openOffCanvasCart method. We override this method by creating a new method with the same name.
+
+Extending instead of overriding
+If you want to extend the AddToCartPlugin instead of overriding it, you need to call the original method in your new method like this:
+
+import AddToCartPlugin from 'src/plugin/add-to-cart/add-to-cart.plugin';
+
+export default class CustomAddToCartPlugin extends AddToCartPlugin {
+    _openOffCanvasCart() {
+      // Call the original method
+      super._openOffCanvasCart();
+
+      // Then do your own stuff
+      console.log('Item added to cart without opening offcanvas');
+    }
+
+}
+
+Register the Override in the main.js File
+As mentioned, the main.js file is the entry point. This means the override happens there:
+
+import ExamplePlugin from './example-plugin/example-plugin.plugin';
+import CustomAddToCartPlugin from './custom-add-to-cart/custom-add-to-cart.plugin';
+
+const PluginManager = window.PluginManager;
+
+PluginManager.register('ExamplePlugin', ExamplePlugin, '[data-example-plugin]');
+PluginManager.override('AddToCart', CustomAddToCartPlugin, '[data-add-to-cart]'); // <-- Override the AddToCartPlugin here
+
+The CustomAddToCartPlugin is imported from the custom-add-to-cart folder.
+We override the AddToCart plugin with the CustomAddToCartPlugin with this code line PluginManager.override('AddToCart', CustomAddToCartPlugin, '[data-add-to-cart]');.
+This means in detail: The AddToCart Plugin is registered in Shopware-storefront core like this:
+
+import AddToCart from 'src/plugin/add-to-cart/add-to-cart.plugin';
+
+const PluginManager = window.PluginManager;
+
+PluginManager.register('AddToCart', AddToCart, '[data-add-to-cart]');
+
+And you call it the same way, but with the override method, and you pass the CustomAddToCartPlugin as the second argument.
+
+If you are following this via the GitHub Repo please checkout the tag: LU-02-custom-js-override.
+
+Now everything should work as expected. The offcanvas cart should not open anymore when you add a product to the cart.
+
+Before
+
+
+After
+
+
+Congratulations, you have successfully overridden the AddToCartPlugin!
+
+If you want to learn more about JavaScript and Shopware storefront JavaScript plugins, please check out the following resources:
+
+https://developer.mozilla.org/de/docs/Web/JavaScript
+
+https://www.typescriptlang.org/
+
+https://developer.shopware.com/docs/guides/plugins/plugins/storefront/add-custom-javascript.html#writing-a-javascript-plugin
+
+Special Case: Overriding Async Storefront JavaScript Plugins
+Some storefront plugins in Shopware are registered asynchronously. This means, if you override such a plugin, your override must also be registered asynchronously. Otherwise, the override will not be applied.
+
+Async plugins are typically used for functionality needed only on certain pages. Typical examples include:
+
+Product detail page features
+Checkout-specific functionality
+Start page features
+CMS landing pages
+Other page-specific features
+Loading these plugins only when required helps keep the initial storefront JavaScript payload smaller, which improves loading performance.
+
+Therefore, whenever you override a plugin, it is good practice to check whether the original plugin is registered synchronously or asynchronously and register your override in the same way.
+
+Example
+Imagine the AddToCartPlugin is registered asynchronously. Your override should then look like this:
+
+const PluginManager = window.PluginManager;
+
+PluginManager.override(
+  'AddToCart',
+  () => import('./custom-add-to-cart/custom-add-to-cart.plugin'),
+  '[data-add-to-cart]'
+);
+
+What happens here?
+
+Instead of importing your custom plugin at the top of the file and passing it to the override method, you use a dynamic import:
+
+() => import('./custom-add-to-cart/custom-add-to-cart.plugin')
+
+This tells Shopware to load the plugin only when it is necessary, instead of loading it together with the rest of the storefront JavaScript.
+
+Summary
+In this learning unit, you learned the basics of storefront JavaScript in Shopware. Specifically, you now know how to:
+
+Create a new storefront JavaScript plugin with the CLI or GitHub example.
+Use the main.js entry file and the PluginManager to register and link plugins.
+Attach your plugin to an element via data attribute (e.g., template data-example-plugin).
+Build and watch the storefront with the provided Shopware scripts (build-storefront.sh and watch-storefront.sh).
+Extend or override existing storefront JavaScript plugins, such as the AddToCartPlugin.
+Understand the difference between synchronous and asynchronous storefront JavaScript plugins.
+With this knowledge, you can start changing and extending the behavior of your shop in a structured and maintainable way.
+
+_____________________________
+
+comments:
+
+
+Sven Rothe
+3 months ago
+Hä? Die variables.scss Datei beinhaltet doch nicht die Default Einstellungen? Es gibt auch kein util Ordner. Wird auch nichts dergleichen angelegt, wenn man ein eigenes Theme erstellt. Ich finde das etwas irreführend, denn dies wird auch in der Prüfung als Frage gestellt.
+Die Default Einstellungen sind doch beim Standard Theme in der _theme.scss bzw. wenn man nur die Bootstrap Storefront lädt in der _bootstrap.scss
+
+1
+JK
+Johanna Kratzer
+5 months ago
+For anyone who has a setup with ddev, here is a link that helped me get the right settings to use bin/watch-storefront.sh:
+https://notebook.vanwittlaer.de/ddev-for-shopware/storefront-and-admin-watchers-with-ddev
+
+1
+1
+
+Ilona Herr
+6 months ago
+(edited)
+Zum Thema "bin/watch-storefront.sh" hätte ich noch eine Info für alle: Das funktioniert nur dann, wenn zum einen npm und .jq installiert ist.
+Zum dem Image noch was: das Bild zeigt in den Dev-Tools 'localhost:9998' was voraussetzt dass der Shop in einem lokalen Webserver liegt und nicht auf einem entfernten Webserver.
+
+1
+3
+AM
+Alexander Menk
+11 months ago
+This is where SCSS comes into play.
+Some basic settings are configurable in the theme. If not, this is where SCSS comes into play.
+
+?
+
+1
+
+
+Daniel Geike
+1 month ago
+Would also be worth mentioning that if the plugin you're trying to override is registered as an async plugin, your override has to be async as well, see: https://developer.shopware.com/docs/guides/plugins/plugins/storefront/add-custom-javascript.html#registering-an-async-plugin and https://developer.shopware.com/docs/guides/plugins/plugins/storefront/override-existing-javascript.html#register-your-extended-plugin
+
+2
+Al
+Adrian lwey525@gmail.com
+3 months ago
+Idk why they didn't mention something very important after creating a plugin like maybe refresh and install it before building frontpage? Who even writes it...
+
+bin/console plugin:refresh
+bin/console plugin:install --activate AcademyCustomJs
+
+1
+R
+R4M
+3 months ago
+"make:plugin:javascript-plugin" steht so nicht in der aktuellen CLI Übersicht von Shopware
+
+1
+SI
+SundS ITs
+11 months ago
+Creating a new JS plugin does not work at all on my end. I've created a JS plugin with plugin:create, but it does not work. I've added the missing lines in example-plugin.plugin.js but no console.log or alert appears.
+
+What does "For our simple test, we need to take away the [data-example-plugin] from the register function. With it, we will decide where the plugin will be executed." mean? Do I remove "PluginManager.register('ExamplePlugin', ExamplePlugin, '[data-example-plugin]');" to only be "PluginManager.register('ExamplePlugin', ExamplePlugin);"?
+
+index.html.twig did not exist. I created it manually. Again, a path to the file would be helpful to minimize errors.
+
+bin/build-storefront.sh did not seem to do anything.
+
+A troubleshooting section would be greatly appreciated, because I don't know at what point something went wrong.
+
+Read less
+GH
+Gregory Hoole
+11 months ago
+Would be good to explain why a plugin needs to be registered.
+
+This line is a bit confusing: "For our simple test, we need to take away the [data-example-plugin] from the register function. With it, we will decide where the plugin will be executed."
+
+Using code from LU-02-custom-js-add produces an error when adding the override:
+
+An error occurred while fetching async JS-plugins TypeError: Class constructors cannot be invoked without 'new'
+
+Read less

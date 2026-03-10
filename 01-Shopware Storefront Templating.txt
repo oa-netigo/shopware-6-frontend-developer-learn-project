@@ -1,0 +1,523 @@
+Shopware Storefront Templating
+Introduction
+Customizing your Shopware Storefront often starts with adjusting its templates. This course introduces you to Twig, the templating engine used in Shopware.
+
+We will explore how Shopware structures its templates, how to locate and override Twig blocks, and how to extend existing templates without losing the original functionality. Step by step, we will discover the most common Twig features such as tags, filters, and functions, so you can confidently build and customize your Storefront views.
+
+By the end of this course, you will have a solid understanding of Shopware’s templating system and how to safely implement changes that are clean and maintainable.
+
+_____________________________
+
+Getting Started with Twig
+
+Learning Objectives
+Create a plugin with a Shopware console command.
+Understand the basics of Shopware templating.
+Identify and avoid common pitfalls when creating or overriding a template.
+Introduction
+If you have already gone through our Shopware Backend Development Essentials, you have seen a few twig files already.
+
+We will get you started with the basics first, creating a basic plugin and checking if the override works as expected.
+
+Twig
+Twig is a templating engine for PHP. It is used in many PHP frameworks, including Symfony and Shopware. PHP executes twig templates on the server-side. This means all Twig code is processed before the HTML is sent to the browser. The result is a clean HTML, CSS and JavaScript, never the Twig syntax.
+
+Twig allows you to write clean and readable templates that can be easily extended and customized. In Shopware, Twig is used to render HTML templates for the Storefront and Administration. You can use Twig to create custom templates, extend existing templates, and include other templates.
+
+For more information about Twig, visit the official Twig documentation.
+
+Creating a Plugin
+Creating a plugin or app is straightforward with Shopware’s plugin:create console command. To create a new plugin or app, run the following command:
+
+# Create a plugin
+bin/console plugin:create AcademyFrontendEssentials Academy
+
+# Create an app
+bin/console app:create AcademyFrontendEssentialsApp
+
+Example based on plugin
+We will continue this example with a plugin. You can use the same steps for an app since the templating system is the same.
+
+This command will create a new plugin called AcademyFrontendEssentials with the namespace Academy. The plugin will be created in the custom/plugins directory.
+
+You can choose no for the interactive questions, as we do not need any additional code for this example.
+
+Feel free to clone the frontend essentials plugin to follow along. We will be using git tags to guide you through the process.
+
+git clone git@github.com:ShopwareAcademy/AcademyFrontendEssentials.git
+
+git checkout tags/LU-01-basic-templating
+
+Install and Activate Plugin
+Before Shopware can load your templates, you need to refresh the plugin list, so Shopware detects newly created plugins.
+
+Run the following command in your shop’s root directory:
+
+bin/console plugin:refresh
+
+After that, you can install and activate the plugin:
+
+bin/console plugin:install AcademyFrontendEssentials
+bin/console plugin:activate AcademyFrontendEssentials
+
+You can also install and activate a plugin in one command:
+
+bin/console plugin:install AcademyFrontendEssentials --activate
+
+From now on, Shopware will load your templates and configuration from this plugin.
+
+Prepare Development
+Check your .env file and make sure that the APP_ENV is set to dev. This will enable the development mode in Shopware and show more detailed error messages.
+
+APP_ENV=dev
+
+Shopware caches configuration values. To apply your change, clear the cache with the following command:
+
+bin/console cache:clear
+
+Adding a Template
+Shopware uses the Twig templating engine for rendering HTML. To change the appearance of your Shopware shop, you need to create a new template file. Those views are stored in the src/Resources/views directory of your plugin or app.
+
+Mirroring the file structure
+To extend or overwrite an existing template - whether it comes from Shopware core or from another plugin – you need to mirror the file path inside your own plugin.
+
+For example, the product-detail template:
+
+Shopware Storefront (core): [your_shop_root_directory]/vendor/shopware/storefront/Resources/views/storefront/page/product-detail/index.html.twig
+Plugin path (relative): AcademyFrontendEssentials/src/Resources/views/storefront/page/product-detail/index.html.twig
+Full path in your shop: [your_shop_root_directory]/custom/plugins/AcademyFrontendEssentials/src/Resources/views/storefront/page/product-detail/index.html.twig
+When the paths match, Shopware will load your template instead of the original one.
+
+Example
+At this point, your plugin file structure looks like this:
+
+└── AcademyFrontendEssentials
+    ├── src
+    │   └── Resources
+    │       └── views
+    │           └── storefront
+    │               └── base.html.twig
+    │               └── page
+    │                   └── product-detail
+    │                       └── my_plugin.html.twig
+    ├── AcademyFrontendEssentials.php
+    └── composer.json
+
+To verify everything is working, we will create a new template file at the root of all Storefront templates. This is the base.html.twig file. This file is the base template for all other templates in Shopware.
+
+Create a new file in the src/Resources/views/storefront/base.html.twig directory of your plugin. Add the following content to the file:
+
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_body %}
+    <h1>Hello World</h1>
+{% endblock %}
+
+This will override the base_body block of your base.html.twig file. The base_body block is the main content area of the Shopware shop.
+
+It is the easiest way to check if your template is working. If you see the “Hello World” text on your storefront, everything is set up correctly.
+
+
+
+Troubleshooting
+Here are some examples why your changes might not be shown:
+
+Plugin or App is not installed and activated.
+Base Twig file is not in the right directory.
+Base Twig file is not named correctly (often html and twig file types are reverted, correct is base.html.twig).
+Cache is not cleared (run the command bin/console cache:clear).
+Summary
+In this learning unit, you learned the basics of working with Twig in Shopware. Specifically, you now know how to:
+
+Create a new plugin with the Shopware console command.
+Locate and mirror template files to extend or override them.
+Verify your changes with a simple “Hello World” example.
+Troubleshoot common issues such as missing activation or uncleared caches.
+With this foundation, you are ready to start making meaningful adjustments to the Storefront by customizing existing templates or creating your own.
+
+_____________________________
+
+Twig blocks
+
+Learning Objectives
+Get an overview of the block structure in Shopware.
+Find the right block to override.
+Extend or include templates.
+Introduction
+Twig blocks are sections of a template that can be overridden or extended by other templates. When you want to customize the appearance of your Shopware shop, you need to find the right block to override.
+
+We are using our demo plugin from the previous unit to check out how to find the right block to override. If you haven’t cloned the repository yet, you can do it now.
+
+git clone git@github.com:ShopwareAcademy/AcademyFrontendEssentials.git
+
+Finding Your Block
+In Shopware 6, templates are organized via blocks. Blocks are sections of a template that can be overridden or extended by other templates. When you want to customize the appearance of your Shopware shop, you need to find the right block to override.
+
+Search for CSS class or id
+One way to find the right block is to search for a specific class or id in a template. You can use the browser’s developer tools to inspect the HTML of the page and find the class or id that you want to customize. Once you have identified the class or id, you can search for it in the template files to find the corresponding block.
+
+Validate correct block
+Always double-check your blocks, as they might be used in multiple places/files.
+
+Use custom class names
+It’s a good practice to add custom class names in your own templates. This way it makes it easier for you to verify your changes, avoids conflicts with other plugins, themes or the core, and helps you find the right block more easily during development. Adding custom styles with SCSS also becomes much simpler since you can target your unique class names.
+
+Using FroshDeveloperHelper
+Another way to find the right block is to use the FroshDeveloperHelper plugin. This plugin dumps HTML comments into the source code of the page, which makes it easier to identify the blocks that you want to customize.
+
+
+
+If you want to use it in your project, you can install it via the Shopware Store or require it via composer.
+
+composer require frosh/development-helper
+
+Extend or Include Storefront Templates
+In Shopware 6, you can extend or include templates from other templates using the sw_extends and sw_include tags. This is useful when you want to reuse parts of a template or extend a template with additional content.
+
+The sw_extends Tag
+The sw_extends tag is used to extend a template with additional content. It is similar to the extends tag in Twig, but it is specific to Shopware templates.
+
+Here is an example of how to use the sw_extends tag:
+
+{% sw_extends '@Storefront/storefront/element/cms-element-product-name.html.twig' %}
+
+In this example, we extend the cms-element-product-name.html.twig template from the product detail page in the Storefront theme.
+
+Let’s check out the git tag to see how it works.
+
+git checkout LU-02-twig-blocks
+
+As you see in the sw_extends tag, we need to create a file in the following path:
+
+└── AcademyFrontendEssentials
+    ├── src
+    │   └── Resources
+    │       └── views
+    │           └── storefront
+    │               └── element
+    │                   └── cms-element-product-name.html.twig
+
+This file should contain the following content:
+
+{% sw_extends '@Storefront/storefront/element/cms-element-product-name.html.twig' %}
+
+{% block element_product_name_inner %}
+  <h2>Is an awesome product! &#127881;</h2>
+{% endblock %}
+
+After reloading your Storefront, the product name will be replaced with your custom text:
+
+
+
+This completely overrides the product name block. But what if you want to keep the original content and add your own content? Let’s see how to do that.
+
+Parent and Child Blocks
+Templates can have parent and child blocks. When you override a block in a template, you can call the parent block to include the original content. This allows you to customize the appearance of the block without having to rewrite the entire block.
+
+If we apply the parent() function in the block, we can include the original content of the block, in our case the product name.
+
+{% sw_extends '@Storefront/storefront/element/cms-element-product-name.html.twig' %}
+
+{% block element_product_name_inner %}
+  {{ parent() }}
+  <h2>Is an awesome product! &#127881;</h2>
+{% endblock %}
+
+After reloading your Storefront, the original product name is still shown, followed by your custom text:
+
+
+
+This way, you extend the block instead of fully replacing it.
+
+The sw_include Tag
+The sw_include tag is used to include a template within another template. It is similar to the include tag in Twig, but it is specific to Shopware 6 templates.
+
+Note
+The sw_include tag allows you to orchestrate your template files by creating generic template files, that can be included in multiple places. This helps you to keep your templates DRY (Don’t Repeat Yourself) and maintainable.
+
+Here is an example of how to use the sw_include tag:
+
+{% sw_include '@Storefront/storefront/page/product-detail/frontend-essentials/color.html.twig' %}
+
+This will include the color.html.twig template from the frontend-essentials directory in the file you choose to include it in. In our case, we will extend the tab section on the product detail page. Check out the git tag to see how it works.
+
+git checkout LU-02-twig-blocks-swinclude
+
+{% block element_product_description_reviews_tabs_content %}
+    {{ parent() }}
+    {% block frontend_essentials_custom_tabs_content %}
+        <div class="tab-pane fade" id="custom-review-content" role="tabpanel" aria-labelledby="custom-review-tab">
+            {% sw_include '@Storefront/storefront/frontend-essentials/color.html.twig' %}
+        </div>
+    {% endblock %}
+{% endblock %}
+
+Template Inheritance Order
+Often you will have plugins or apps overriding the same block. By default, the last installed plugin will have the highest priority.
+
+However, you can set the order of the view coming first in a theme. This is done in the views section of the theme.json file.
+
+{
+  "views": [
+    "@Storefront",
+    "@Plugins",
+    "@MyTheme" // highest priority
+  ]
+}
+
+This setup ensures that @MyTheme has the highest priority and overrides all views listed above.
+
+A practical example with code will follow in a later in another learning course.
+
+If you want to dive deeper in theme inheritance, check out the official Shopware documentation.
+
+Summary
+In this learning unit, you learned how to:
+
+Inspect and locate the right Twig block to override.
+Extend templates with sw_extends.
+Reuse templates with sw_include.
+Keep the original content of a block with parent().
+Understand the inheritance order in Shopware themes and plugins.
+With these skills, you can customize specific parts of the Storefront while keeping your templates clean and maintainable.
+
+_____________________________
+
+Twig Features
+
+Learning Objectives
+Get an overview of Twig functionalities in Shopware.
+Understand the common Twig tags, filters, and functions in Shopware.
+Know that it is possible to create custom Twig functions.
+Introduction
+We have seen a few twig features before, can you guess which ones? For example sw_extends and sw_include are both Shopware specific tags. In this learning unit, you will get an overview of common twig functionalities.
+
+Tags
+You already know the tags sw_extends and sw_include. In the following, we introduce some more Twig tags.
+
+The set Tag
+Twig allows you to define variables directly inside your template. This is useful if you want to store values or provide a fallback value inside the template.
+
+Example
+{% set variable_name = 'Value' %}
+
+The with Keyword
+You can pass variables into a template with the with keyword when you include it with sw_include. This allows you to make part of a generic Twig file dynamic.
+
+It’s common practice to define default values in the included template using set, so the template still works even if no variable is passed.
+
+Example
+The following generic template is given (custom_block.html.twig).
+
+{% block custom_block %}
+  {% set custom_variable = 'Hello World' %}
+  <h1>
+    {{ custom_variable }}
+  </h1>
+{% endblock %}
+
+You can now include (import) this generic template and override the variable.
+
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' with {
+    custom_variable: "Greetings."
+} %}
+
+Or pass a variable (or more variables separated with comma) instead of a hard-coded value.
+
+{% set welcoming = "Greetings." %}
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' with {
+    custom_variable: welcoming
+} %}
+
+This will render <h1>Greetings.</h1>.
+
+Or you can skip the with tag to use the default.
+
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' %}
+
+This will render <h1>Hello World</h1>.
+
+The ignore missing Keyword
+You can use the ignore missing keyword with the sw_include tag to ignore missing templates. This is useful if you want to include a template that is optional and prevent errors if the file does not exist.
+
+Examples
+{% set welcoming = "Greetings." %}
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' ignore missing with {
+    custom_variable: welcoming
+} %}
+
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' ignore missing %}
+
+The if Tag
+The if tag allows you to check if a condition is true. If it is, the content inside the if tag is rendered.
+
+Example
+Building on the example above, you can use the if tag to include the custom template under conditions.
+
+  {% set welcoming = "Hi there." %}
+  {% if welcoming is same as("Greetings.") %}
+    {% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' with {
+      custom_variable: welcoming
+    } %}
+  {% else %}
+    {% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' %}
+  {% endif %}
+
+Strict Comparison
+Twig is using the same as for strict comparison. It ensures that the value and the type are identical.
+
+For more information on the if tag, check out the official Twig documentation.
+
+The for Tag
+The for tag allows you to loop through a collection of items.
+
+Example
+  {% set products = ['Shirt', 'Shoes', 'Hat'] %}
+
+  <ul>
+    {% for product in products %}
+      <li> {{ product }} </li>
+    {% endfor %}
+  </ul>
+
+This will render
+
+<ul>
+  <li> Shirt </li>
+  <li> Shoes </li>
+  <li> Hat </li>
+</ul>
+
+Loop Variables
+Inside the for loop, you can use special variables like loop.index (current iteration of the loop) or loop.length (total number of items) and more.
+
+For more information on the for tag, check out the official Twig documentation.
+
+Now you know the basics of some important Twig tags. If you want to dive deeper, check out the official Twig documentation and the official Shopware Twig documentation.
+
+Filters
+Filters allow you to modify the output of a variable in your template. They are used to format or transform the data before it is displayed. To use a filter in a template, you need to call it with the | syntax. The best example for it is the currency filter. Crucial in ecommerce.
+
+Example 1: Using the default Filter
+The default filter is used to set a default value if the variable is not defined or empty.
+This relates to the sw_include examples you saw earlier, where we used the set tag to set a default (fallback) value. You can also use the default filter to set a default value.
+
+{% block custom_block %}
+  <h1>
+    {{ custom_variable|default('Hello World') }}
+  </h1>
+{% endblock %}
+
+If the custom_variable variable is not defined or empty, the default filter will return the value of Hello World. If it is defined, the actual value will be returned.
+
+Example 2: Using the currency Filter
+Here is a common example of how to use the currency filter in a template:
+
+{{ product.price|currency }}
+
+We are using the currency filter to format the product.price variable (with a value of 12.99) as a currency value. Depending on your shop’s locale and currency, this could render in German (de-DE) 12,99€ and in English (en-GB) €12.99. You can configure the currency and local freely in the Shopware Admin panel.
+So the currency filter is a Shopware 6 specific filter, which wraps the Twig’s native format_currency. It automatically uses the active sales channel’s currency and locale.
+
+If you want to explicitly set a locale or currency, you can use the Twig’s native format_currency filter:
+
+{{ 12.99|format_currency('EUR', {}, 'de-DE') }}
+{{ 12.99|format_currency('EUR', {}, 'en-GB') }}
+
+Example 3: Using the sw_sanitize Filter
+The sw_sanitize filter is a Shopware specific filter. It is used to render HTML content safely. It removes potentially dangerous tags and attributes (for example, the <script> tag or the onmouseover event) and keeps only a defined set of safe HTML tags like <p>, <b>, <i>, <a>, etc.
+This way, you can ensure that your HTML content is safe and does not contain any malicious code (cross-site scripting).
+
+{% set input_html = '<p> Hello <b>World</b> <script>alert("XSS")</script></p>' %}
+{{ input_html|sw_sanitize }} {# Output: <p>Hello <b>World</b></p> #}
+
+If you want to dive deeper, check out the official Twig documentation and the Shopware Twig documentation.
+
+Functions
+Functions allow you to execute a specific task or operation in your template. The passed arguments are used in PHP to generate the output. You already know the block and parent functions and that functions are called with the () syntax.
+
+Functions in Shopware
+Twig provides the include and extends functions. Shopware wraps these functions in its own sw_include and sw_extends tags to ensure that the template usage follows the Shopware conventions.
+
+The config Function
+Shopware provides the custom Twig function config. With the config function you get a value from the system config. Here is an example of how to use the config function in a template:
+
+{{ config('AcademyFrontendEssentials.config.showColorfulTab') }}
+
+In this example, we are using the config function to get the value of the AcademyFrontendEssentials.config.showColorfulTab configuration field.
+
+This is a common use case for getting your plugin or app configuration values into your template. In our example plugin, we are going to check if the field is set to true and then show a colorful tab.
+
+Check out the git tag and take a look at the AcademyFrontendEssentials/src/Resources/views/storefront/element/cms-element-product-description-reviews.html.twig file.
+
+git checkout LU-03-functions
+
+{% if config('AcademyFrontendEssentials.config.showColorfulTab') %}
+    <li class="nav-item">
+        <a class="nav-link" id="custom-review-tab" data-bs-toggle="tab" href="#custom-review-content" role="tab"
+           aria-controls="custom-review-content" aria-selected="false">
+            Colorful div tab
+        </a>
+    </li>
+{% endif %}
+
+IDE Support | Symfony Plugin
+If you are using PhpStorm, you can install the Symfony plugin to get autocompletion for the config function.
+
+It also allows you to quickly jump to the Twig file you are extending with the sw_extends tag.
+
+Twig Block Versioning and Shopware Updates
+When overriding Twig templates, especially during Shopware updates, consider Twig Block Versioning.
+
+If you are using PHPStorm, the Shopware plugin provides support for this feature: Twig Block Versioning support in PhpStorm.
+
+At this point, you know the basics of functions. If you want to dive deeper, check out the official Twig documentation and the Shopware Twig documentation.
+
+Creating Custom Functions
+You can also create your own custom functions in Shopware. To do this, you need to create a new service that extends the Twig\Extension\AbstractExtension class and implements the Twig\Extension\ExtensionInterface interface.
+
+We already have a guide on how to create a custom twig function in our documentation. You can find it here.
+
+Custom filters and functions
+We do not cover custom filters and functions in this course from a code perspective. However, this might be a part of a more advanced course in the future.
+
+Summary
+In this learning unit, you explored common Twig features in Shopware. Specifically, you learned how to:
+
+Use tags like set, if, for, and the with keyword with sw_include.
+Apply filters such as default, currency, and sw_sanitize.
+Call built-in and Shopware specific functions like config.
+Understand how custom Twig functions can be created for advanced use cases.
+With this knowledge, you can make your Storefront templates more dynamic, flexible, and maintainable.
+
+_____________________________
+
+comments:
+
+
+Gerardo Gaggero
+3 months ago
+Important missing step: after creating a plugin [bin/console plugin:create XXX] and before installing it [bin/console plugin:install XXX], it is required to REFRESH the plugins list [bin/console plugin:refresh]. Even if the .env is in dev mode [APP_ENV=dev]
+
+1
+
+SI
+SundS ITs
+11 months ago
+The block was element_product_name for me, not element_product_name_inner.
+
+Also the connection to git doesn't work for me, so a path to copy for the new files would help immensely to minimize errors.
+
+1
+1
+
+MV
+Manuel Völker
+26 days ago
+Your syntax there might be wrong
+{% sw_include '@Storefront/storefront/frontend-essentials/custom-block.html.twig' { with
+custom_variable: "Greetings."
+} %}
+the "with" should preceed the curly braces
+
+Read less
+2

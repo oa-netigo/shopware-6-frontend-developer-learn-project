@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certification Exam — SW Learn</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/quiz.css" />
+  <style>
+    /* Exam-specific overrides */
+    .exam-header-bar {
+      background: var(--sw-dark);
+      padding: 12px 0;
+      position: sticky;
+      top: var(--header-h);
+      z-index: 50;
+    }
+    .exam-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .exam-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .exam-timer {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--sw-blue);
+      font-variant-numeric: tabular-nums;
+      min-width: 80px;
+      text-align: center;
+      background: rgba(24,158,255,0.15);
+      border: 1px solid rgba(24,158,255,0.3);
+      border-radius: var(--radius);
+      padding: 6px 14px;
+      transition: color var(--transition), background var(--transition), border-color var(--transition);
+    }
+    .exam-timer.warning {
+      color: var(--sw-danger);
+      background: rgba(220,53,69,0.15);
+      border-color: rgba(220,53,69,0.4);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .exam-q-counter {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .exam-submit-btn {
+      background: var(--sw-success);
+      color: #fff;
+      border: none;
+    }
+    .exam-submit-btn:hover { background: #1e8c38; }
+    .exam-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Dot grid for exam (50 questions) */
+    .exam-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .exam-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: #d0e4f5;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .exam-dot:hover      { transform: scale(1.2); }
+    .exam-dot.current    { background: var(--sw-blue); }
+    .exam-dot.answered   { background: var(--sw-dark-3); }
+    .exam-dot.unanswered { background: #d0e4f5; }
+
+    /* Exam nav prev/next */
+    .exam-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .exam-answered-count {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Results extras */
+    .module-breakdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .module-score-card {
+      background: var(--sw-light-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--sw-border);
+      padding: 12px;
+      text-align: center;
+    }
+    .module-score-card .ms-icon  { font-size: 1.3rem; margin-bottom: 4px; }
+    .module-score-card .ms-score { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+    .module-score-card .ms-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    @media (max-width: 600px) {
+      .module-breakdown { grid-template-columns: repeat(2, 1fr); }
+      .exam-header-inner { flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main App Header -->
+  <header class="app-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">SW</span> Learn
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Dashboard</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="exam.html" class="active">Exam</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Exam header bar -->
+  <div class="exam-header-bar" id="examHeaderBar">
+    <div class="container">
+      <div class="exam-header-inner">
+        <div class="exam-title">🎓 <span>Certification Exam</span></div>
+        <span class="exam-q-counter" id="examQCounter">Question 1 of 50</span>
+        <span class="exam-timer" id="examTimer">30:00</span>
+        <button class="btn btn-sm exam-submit-btn" id="submitBtn" onclick="submitExam()" disabled>
+          Submit Exam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exam body -->
+  <div class="quiz-page">
+    <div class="quiz-body">
+      <div class="quiz-container" id="examContainer">
+        <!-- Rendered by exam.js -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/exam.js"></script>
+</body>
+</html>

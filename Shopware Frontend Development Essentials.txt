@@ -1,0 +1,51 @@
+Shopware Frontend Development Essentials
+Introduction
+Changing the appearance of your Shopware shop is an essential part of creating a unique shopping experience for your customers. The Shopware Frontend Development Essentials learning path will guide you through the fundamentals of Storefront development including how to build and customize themes, templates, styles, and Storefront JavaScript plugins.
+
+You will learn how to:
+
+Create and customize Shopware themes.
+Override Twig templates, SCSS variables, and Storefront JavaScript plugins.
+Debug, test, and maintain your Storefront efficiently.
+This course is designed for developers who want to get started with Shopware frontend development and build custom solutions for their online shops. Whenever we mention “Shopware” in this learning path, we are referring to Shopware 6.
+
+Prerequisites
+Before diving into this learning path, make sure you have:
+
+A running local Shopware 6 development environment (6.5–6.7) with a PHP version compatible with your Shopware version.
+Solid basics of HTML/CSS and JavaScript.
+Only relevant for the fourth course (Testing and Debugging):
+
+A running Shopware 6.7 installation.
+Node.js (version 16 or higher) and npm or pnpm.
+The AcademyStorefrontController plugin installed in your Shopware instance.
+
+_____________________________
+
+comments:
+
+Mario Schierhoff
+1 month ago
+One Footnote for theme development regarding Shopware Updates are Twig Block Versioning, it might be noticed here somewhere in the path, buti did not catch it. Hope it helps someone. https://www.shopware.com/de/news/twig-block-versioning-in-shopware-phpstorm-plugin/
+
+1
+1
+SC
+Sandip Chandela
+2 months ago
+Got to know about amazing tools here Meteor Shopware 6 Toolkit and Symfony profiler.
+
+3
+
+Marten Stockenberg
+3 months ago
+I appreciate the work which was put into the course. It realy helps, thanks for that.
+
+4
+Mv
+Magnus von Bromsen
+1 year ago
+A very personal wish: More about handling/customise responsive images/media. (I have spent days trying to get a bigger product image on the product detail page - but still no luck. There seems to be a lot of "moving parts" regarding responsive media ;)
+
+1
+1

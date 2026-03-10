@@ -1,0 +1,342 @@
+Shopware Storefront Testing and Debugging
+Introduction
+Learning how to test and debug your code is an essential part of being a developer. In this course, you will learn how to test and debug Twig, SCSS, and Storefront JavaScript files in Shopware.
+
+You will explore how to inspect and troubleshoot your Storefront with tools like the Symfony Profiler, Frosh Development Helper, and Browser DevTools, and how to use the CLI to compile, refresh, and verify your changes.
+We will also cover how to run end-to-end tests with Playwright to ensure your Shopware Storefront works correctly across different environments.
+
+By the end of this course, you will have a practical toolkit to identify issues quickly, validate your changes, and maintain a stable Storefront.
+
+_____________________________
+
+Debugging Your Storefront Application
+
+Learning Objectives
+Find values in the Storefront.
+Know what tools to use for debugging.
+Introduction
+We already covered a few debugging techniques in the Shopware Backend Development Essentials as well as in some of the learning units before. However, gathering information in a dedicated learning unit is always a good idea.
+
+Availability
+Most of the mentioned tools are available in the development environment. Make sure to set the APP_ENV variable to dev in your .env file.
+
+APP_ENV=dev
+
+Twig
+The dump Function
+The dump function is a powerful tool to inspect your Twig templates. You can use it to see which variables are available in your template.
+
+{{ dump() }}
+
+The dump function will output all variables in the current template.
+
+You can also dump a specific variable by passing it as an argument.
+
+{{ dump(product) }}
+
+Note
+Keep in mind that the dump function is only available in the development environment, it is a debugging tool. It should only be used in development, not in production.
+
+Frosh Development Helper
+The Frosh Development Helper is a Shopware plugin that provides a lot of useful tools for developers.
+
+Some features are:
+
+Show Twig Includes / Blocks in Template as HTML Comment
+Disables Twig Cache
+Twig Variables in Twig Tab
+Symfony Profiler
+The Symfony Profiler comes with many neat features and overviews.
+
+For storefront development, you can use the Symfony Profiler to see which twig templates are loaded or what translations are available.
+
+SCSS
+Hot Module Replacement
+Finding the right value in SCSS can be a bit tricky because everything is compiled into one file. This is where the watcher comes in handy. You can use the watcher to see the compiled CSS and find the right value.
+
+bin/watch-storefront.sh
+
+Check out our Hot Module Replacement (HMR) guide to learn more about the watcher.
+
+Browser DevTools
+Browser DevTools is a powerful tool to inspect your frontend. You can see the DOM, the styles, and the JavaScript of your application.
+
+
+
+JavaScript
+Browser DevTools
+Browser DevTools is also a powerful tool to inspect your JavaScript. You can see the console output, the network requests, and the JavaScript of your application.
+
+Not so long ago the JavaScript was one big file, but now it is split into multiple files. This makes it easier to debug your JavaScript code.
+
+
+
+Other Tools
+Meteor Shopware 6 Toolkit
+The Meteor Shopware 6 Toolkit is a Chrome extension that helps you jump to the right place in the Shopware 6 administration when being on a product detail page or category page.
+
+Helpful when debugging or developing new features.
+
+Summary
+In this learning unit, you learned how to:
+
+Use the dump function in Twig to inspect available variables.
+Speed up template debugging with the Frosh Development Helper plugin.
+Use the Symfony Profiler to inspect Twig templates, translations, and requests.
+Inspect JavaScript behavior, network requests, and console output with the Browser DevTools.
+Debug and inspect compiled SCSS using the Hot Module Replacement watcher.
+Use additional tools like the Meteor Shopware 6 Toolkit for faster navigation in the Shopware Admin.
+With these debugging tools and techniques, you have a solid arsenal to quickly analyze, debug, and fix issues in your frontend application workflow.
+
+_____________________________
+
+Best practices for Running End-to-End Tests with Playwright
+
+Learning Objectives
+Understand the role of Playwright in Shopware as the new E2E testing framework since Shopware 6.7.
+Learn how to write and run Playwright E2E tests.
+Learn how to run an E2E test locally and in a CI environment.
+Introduction
+Starting with Shopware 6.7, Playwright replaces Cypress as the default end-to-end testing framework. It provides faster execution, better cross-browser support, new features and improvements, and a more robust developer experience.
+
+You can also use other testing frameworks, but since the acceptance test suite created by Shopware already covers a lot of the functionality, it is highly recommended to use it.
+
+In this learning unit, you will learn how to write an end-to-end test in Shopware with Playwright.
+
+Real-World Example
+Fortunately, we already have an example for our test. In our AcademyStorefrontController plugin, we have a custom controller that opens a modal window when clicking on a link. We want to make sure that the link with the class open-image-modal exists.
+
+Getting Started
+Missing documentation
+This is a very new feature and not fully released yet in the official documentation.
+
+As always, you can start from scratch or check out the Academy repository.
+
+Clone it in the custom/plugins directory of your local Shopware installation. If you have done the backend development essentials course, you should already have a running Shopware installation and the plugin installed.
+
+git clone git@github.com:ShopwareAcademy/AcademyStorefrontController.git
+
+Folder Structure
+The new Playwright folder structure is simpler and less nested than the old Cypress structure. You can find the tests in the tests/acceptance folder.
+
+Pluginroot
+└── tests
+    └── acceptance
+        ├── tests
+        │   ├── product-buy-widget.spec.ts
+        │   └── BaseTestFile.ts
+        .env
+        .env.dist
+        .gitignore
+        package.json
+        package-lock.json
+        playwright.config.ts
+
+Key Files
+The .env.dist File
+Contains your default environment variables. You can copy it to .env and adjust it to your needs.
+
+APP_URL=http://localhost:8000
+
+# Authentication via integration
+SHOPWARE_ACCESS_KEY_ID=SWIAA29PA0W0UWZVDDE2EWHZDG
+SHOPWARE_SECRET_ACCESS_KEY=N0JzcmtYUTNiUkxPSGtuSm5qVU9rTWpBUHVSWFpIRURCV0F4U0E
+
+# Autentication via admin user
+SHOPWARE_ADMIN_USERNAME=shopware
+SHOPWARE_ADMIN_PASSWORD=shopware
+
+The playwright.config.ts File
+This file holds the configuration for your tests. You can adjust the browser, the base URL, and the test files. Check out the official Playwright documentation for more information.
+
+import { defineConfig, devices } from '@playwright/test';
+// @ts-ignore
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+process.env['SHOPWARE_ADMIN_USERNAME'] = process.env['SHOPWARE_ADMIN_USERNAME'] || 'admin';
+process.env['SHOPWARE_ADMIN_PASSWORD'] = process.env['SHOPWARE_ADMIN_PASSWORD'] || 'shopware';
+process.env['MAILPIT_BASE_URL'] = process.env['MAILPIT_BASE_URL'] || 'http://localhost:8025';
+process.env['APP_URL'] = process.env['APP_URL'] ?? 'http://localhost:8000';
+
+// make sure APP_URL ends with a slash
+process.env['APP_URL'] = process.env['APP_URL'].replace(/\/+$/, '') + '/';
+if (process.env['ADMIN_URL']) {
+    process.env['ADMIN_URL'] = process.env['ADMIN_URL'].replace(/\/+$/, '') + '/';
+} else {
+    process.env['ADMIN_URL'] = process.env['APP_URL'] + 'admin/';
+}
+
+
+
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ */
+export default defineConfig({
+
+    testDir: './tests',
+    /* Run tests in files in parallel */
+    fullyParallel: true,
+    forbidOnly: !!process.env.CI,
+    retries: process.env.CI ? 2 : 0,
+    workers: process.env.CI ? 1 : undefined,
+    reporter: 'html',
+    use: {
+        screenshot: 'only-on-failure',
+        baseURL: process.env.APP_URL,
+        trace: 'on-first-retry',
+    },
+
+    projects: [
+        {
+            name: 'chromium',
+            use: { ...devices['Desktop Chrome'] },
+        },
+
+        {
+            name: 'firefox',
+            use: { ...devices['Desktop Firefox'] },
+        },
+
+    ],
+
+
+});
+
+The BaseTestFile.ts File
+This file holds the base test class. You can add your custom functions here.
+
+import { test as base } from '@shopware-ag/acceptance-test-suite';
+import type { FixtureTypes } from '@shopware-ag/acceptance-test-suite';
+
+export * from '@shopware-ag/acceptance-test-suite';
+
+export const test = base.extend<FixtureTypes>({
+
+});
+
+We are importing that file in our test files.
+
+The product-buy-widget.spec.ts File
+import {expect, test} from './BaseTestFile';
+
+function wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+test('Plugin test scenario.', async ({page, TestDataService, DefaultSalesChannel}) => {
+
+    // Create a basic product
+    const basicProduct = await TestDataService.createBasicProduct();
+
+    // Open the product detail page
+    await page.goto(`${DefaultSalesChannel.url}/detail/${basicProduct.id}`);
+
+    // Wait for the page to load and check for a link with the class "open-image-modal"
+    const openImageModalLink = page.locator('a.open-image-modals');
+
+    await expect(openImageModalLink).toHaveCount(1);
+});
+
+The rest of the files can stay as they are. When running tests, there will be three more folders created:
+
+playwright-report for the test report.
+test-results for the test results.
+node_modules for the dependencies.
+Run Test Locally
+Before running the test, ensure that your plugin is installed and activated your running shopware instance. You can skip this step if you already have the plugin installed.
+
+bin/console plugin:install AcademyStorefrontController --activate
+bin/console cache:clear
+bin/console theme:compile
+
+Next, navigate to the test folder from your shop’s root directory and install the dependencies.
+
+cd custom/plugins/AcademyStorefrontController/tests/acceptance
+npm install
+npx playwright install
+npx playwright install-deps
+
+And run the Playwright UI where you can select the tests you want to run.
+
+npx playwright test --ui
+
+
+
+Or execute tests directly in the terminal:
+
+npx playwright test
+
+
+
+Why here?
+The tests are located in the tests/acceptance folder. This folder contains the package.json file for dependencies and the playwright.config.ts file for configuration. Therefore, you need to run all Playwright commands from inside the tests/acceptance folder.
+
+Run Test in CI
+You can also run the test in a CI environment, such as GitHub Actions. You can check out the full example in the GitHub workflow. This setup allows you to:
+
+Run tests automatically on pull requests.
+Test against the Shopware trunk version nightly (e.g., 3 am builds), so on schedule.
+The Following parameters required for that are:
+
+The extensionName: It is the name of your plugin – it is recommended to name the Repository the same as the plugin.
+The e2ePath: It is the path to your E2E tests / root of your test folder (e.g., [your_shop]/custom/plugins/AcademyStorefrontController/tests/acceptance).
+The shopwareVersion: It is the version of Shopware you want to test on.
+The e2eTestFramework: In this case playwright.
+
+
+Important
+GitHub Actions will only recognize and run your workflow if the workflow file (e.g., e2e.yml) is placed in the .github/workflows folder of your plugin repository. Make sure the file is committed and pushed to the repository so the workflow is automatically triggered.
+
+Summary
+In this learning unit, you have learned how to:
+
+Use Playwright as the new E2E testing framework since Shopware 6.7.
+Write and structure Playwright-based tests for your Shopware plugins.
+Run tests locally via UI or CLI.
+Automate your tests in a CI environment (e.g., GitHub Actions).
+With this knowledge, you can now confidently set up automated Playwright tests to verify that Shopware plugins function correctly across different environments.
+
+Well done on completing the Frontend Development Essentials learning path! You now have the foundation to design, extend, and maintain custom Storefront experiences in Shopware.
+
+_____________________________
+
+comments:
+
+Ilona Herr
+6 months ago
+Veralterter Abschnitt:
+
+Authentication via integration
+
+SHOPWARE_ACCESS_KEY_ID=
+SHOPWARE_SECRET_ACCESS_KEY=
+💡APP_SECRET und INSTANCE_ID sind die aktuellen und korrekten Bezeichnungen
+
+Read less
+1
+
+Ilona Herr
+6 months ago
+Hier wird immer auf die .env Datei verwiesen, obwohl man doch zukünftig die .env.local verwenden soll. 🫤
+
+1
+1
+
+Thomas Brankaer
+8 months ago
+Nice tutorial
+
+LV
+Lukas Völler
+9 months ago
+Love it, thanks!
+
+1
+
+Kay Kletzsch
+9 months ago
+Good Tutorial
+
+1

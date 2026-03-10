@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module Quiz — SW Learn</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/quiz.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">SW</span> Learn
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Dashboard</a>
+        <a href="flashcards.html">Flashcards</a>
+        <a href="exam.html">Exam</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Quiz header bar -->
+  <div class="quiz-header-bar" id="quizHeaderBar" style="position:relative">
+    <div class="container">
+      <div class="quiz-header-inner">
+        <div class="quiz-meta">
+          <span class="quiz-module-badge" id="quizModuleBadge">Loading…</span>
+        </div>
+        <span class="quiz-counter" id="quizCounter"></span>
+      </div>
+    </div>
+    <div class="quiz-progress-strip">
+      <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Quiz body -->
+  <div class="quiz-page">
+    <div class="quiz-body">
+      <div class="quiz-container" id="quizContainer">
+        <!-- Rendered by quiz.js -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>
