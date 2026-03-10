@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check \"c:/Users/OmarAbdullah/Development/learn/shopware-6-frontend-developer-learn-project/shopware-6-frontend-developer-learn-project/js/data.js\")",
+      "Bash(grep -n '\\\\${' \"c:/Users/OmarAbdullah/Development/learn/shopware-6-frontend-developer-learn-project/shopware-6-frontend-developer-learn-project/js/data.js\")",
+      "Bash(grep -v '\\\\\\\\${')"
+    ]
+  }
+}

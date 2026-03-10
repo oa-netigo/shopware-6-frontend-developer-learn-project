@@ -1085,7 +1085,7 @@ test('Product buy widget is present.', async ({ page, TestDataService, DefaultSa
     const basicProduct = await TestDataService.createBasicProduct();
 
     // Navigate to the product detail page
-    await page.goto(`${DefaultSalesChannel.url}/detail/${basicProduct.id}`);
+    await page.goto(\`\${DefaultSalesChannel.url}/detail/\${basicProduct.id}\`);
 
     // Assert element exists
     const openImageModalLink = page.locator('a.open-image-modal');
