@@ -59,10 +59,11 @@ function renderQuestion() {
   document.getElementById('quizProgressFill').style.width = `${((currentIndex) / total) * 100}%`;
 
   const optLetters = ['A', 'B', 'C', 'D'];
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const optionsHtml = q.options.map((opt, i) => `
     <button class="option-btn" data-index="${i}" onclick="selectOption(${i})">
       <span class="option-letter">${optLetters[i]}</span>
-      <span>${opt}</span>
+      <span>${escHtml(opt)}</span>
     </button>
   `).join('');
 
@@ -154,7 +155,7 @@ function showFeedback(q, selected, isCorrect) {
       <span class="feedback-icon">${isCorrect ? '✅' : '❌'}</span>
       <div>
         <strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong>
-        ${!isCorrect ? `<br>The correct answer was: <strong>${q.options[q.correct]}</strong><br>` : ''}
+        ${!isCorrect ? `<br>The correct answer was: <strong>${q.options[q.correct].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</strong><br>` : ''}
         <span style="opacity:0.85">${q.explanation}</span>
       </div>
     </div>
