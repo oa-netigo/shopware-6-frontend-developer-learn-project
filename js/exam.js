@@ -86,12 +86,13 @@ function renderExamQuestion() {
   }).join('');
 
   const optLetters = ['A', 'B', 'C', 'D'];
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const optionsHtml = q.options.map((opt, i) => `
     <button class="option-btn ${answers[currentIndex] === i ? 'selected' : ''}"
             data-index="${i}"
             onclick="selectExamOption(${i})">
       <span class="option-letter">${optLetters[i]}</span>
-      <span>${opt}</span>
+      <span>${escHtml(opt)}</span>
     </button>
   `).join('');
 
@@ -105,7 +106,7 @@ function renderExamQuestion() {
           ${getModuleLabel(q.moduleId)}
         </span>
       </div>
-      <div class="question-text">${q.question}</div>
+      <div class="question-text">${escHtml(q.question)}</div>
       <div class="options-list" id="examOptionsList">${optionsHtml}</div>
     </div>
 
@@ -240,6 +241,7 @@ function showExamResults(questions, answers, score, total, timeTaken) {
   const timeStr = `${mins}m ${secs}s`;
 
   // Review items (show all 50)
+  const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const reviewHtml = questions.map((q, i) => {
     const isOk = answers[i] === q.correct;
     const moduleLabel = getModuleLabel(q.moduleId);
@@ -249,16 +251,16 @@ function showExamResults(questions, answers, score, total, timeTaken) {
           <div class="review-status ${isOk ? 'ok' : 'bad'}">${isOk ? '✓' : '✗'}</div>
           <div>
             <span class="badge badge-muted text-xs" style="margin-bottom:4px;display:inline-flex">${moduleLabel}</span>
-            <div class="review-q-text">${q.question}</div>
+            <div class="review-q-text">${escHtml(q.question)}</div>
           </div>
         </div>
         ${answers[i] !== null ? `
           <div class="review-answer ${isOk ? 'your-correct' : 'your-wrong'}">
-            Your answer: ${q.options[answers[i]]}
+            Your answer: ${escHtml(q.options[answers[i]])}
           </div>
-          ${!isOk ? `<div class="review-answer correct-ans">Correct: ${q.options[q.correct]}</div>` : ''}
+          ${!isOk ? `<div class="review-answer correct-ans">Correct: ${escHtml(q.options[q.correct])}</div>` : ''}
         ` : '<div class="review-answer your-wrong">Not answered</div>'}
-        <div class="review-explanation">${q.explanation}</div>
+        <div class="review-explanation">${escHtml(q.explanation)}</div>
       </div>
     `;
   }).join('');
